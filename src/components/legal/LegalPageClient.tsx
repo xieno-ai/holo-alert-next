@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { PortableText, PortableTextComponents } from '@portabletext/react'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Block = Record<string, any>
+type Block = { _type: string; [key: string]: any }
 
 interface LegalPageData {
   title: string
