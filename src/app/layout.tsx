@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { GoogleTagManager } from '@next/third-parties/google'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Analytics } from '@vercel/analytics/next'
 import { instrumentSans } from '@/lib/fonts'
 import './globals.css'
 
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body className="antialiased">
         {children}
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   )
