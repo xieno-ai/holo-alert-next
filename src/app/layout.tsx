@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { GoogleTagManager } from '@next/third-parties/google'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { instrumentSans } from '@/lib/fonts'
 import './globals.css'
 
@@ -27,7 +28,10 @@ export default function RootLayout({
       className={`${instrumentSans.variable}`}
     >
       {process.env.NODE_ENV === 'production' && <GoogleTagManager gtmId="GTM-N2J4XSL" />}
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {children}
+        <SpeedInsights />
+      </body>
     </html>
   )
 }
