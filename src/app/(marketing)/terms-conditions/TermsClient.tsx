@@ -175,7 +175,6 @@ export default function TermsClient() {
                   display: 'block',
                   textAlign: 'left',
                   padding: '5px 10px',
-                  borderLeft: `2px solid ${activeId === s.id ? '#4294d8' : '#e8e8e8'}`,
                   color: activeId === s.id ? '#4294d8' : '#787878',
                   fontWeight: activeId === s.id ? 600 : 400,
                   fontSize: '13px',
