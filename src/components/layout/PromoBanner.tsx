@@ -1,35 +1,63 @@
 'use client'
 
-import { useState } from 'react'
-import { X } from 'lucide-react'
-
 interface PromoBannerProps {
-  visible?: boolean   // default false — CMS connects this in Phase 3
-  message?: string
-  href?: string
+  body: string
+  ctaText?: string
+  ctaUrl?: string
 }
 
-export default function PromoBanner({
-  visible = false,
-  message = '',
-  href = '#',
-}: PromoBannerProps) {
-  const [dismissed, setDismissed] = useState(false)
-
-  if (!visible || dismissed) return null
-
+export default function PromoBanner({ body, ctaText, ctaUrl }: PromoBannerProps) {
   return (
-    <div className="bg-brand-blue text-white text-sm text-center py-2 px-4 relative">
-      <a href={href} className="hover:underline font-medium">
-        {message}
-      </a>
-      <button
-        onClick={() => setDismissed(true)}
-        className="absolute right-3 top-1/2 -translate-y-1/2 opacity-70 hover:opacity-100 transition-opacity"
-        aria-label="Dismiss banner"
+    <div
+      style={{
+        background: '#f25c2c',
+        padding: '10px 24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '20px',
+        flexWrap: 'wrap',
+      }}
+    >
+      <p
+        style={{
+          margin: 0,
+          color: '#fff',
+          fontFamily: 'var(--font-instrument-sans), sans-serif',
+          fontSize: '13px',
+          fontWeight: 700,
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+          textAlign: 'center',
+          lineHeight: 1.4,
+        }}
       >
-        <X className="h-4 w-4" />
-      </button>
+        {body}
+      </p>
+      {ctaText && ctaUrl && (
+        <a
+          href={ctaUrl}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: '#111',
+            color: '#fff',
+            fontFamily: 'var(--font-instrument-sans), sans-serif',
+            fontSize: '11px',
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            padding: '7px 18px',
+            borderRadius: '100px',
+            textDecoration: 'none',
+            whiteSpace: 'nowrap',
+            flexShrink: 0,
+          }}
+        >
+          {ctaText}
+        </a>
+      )}
     </div>
   )
 }

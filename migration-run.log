@@ -1,0 +1,38 @@
+=== Holo Alert: Webflow → Sanity Migration ===
+Started: 2026-03-04T20:35:37.038Z
+Project: 1n5hrbnv
+Dataset: production
+
+=== [1/6] siteSettings seed ===
+  Created siteSettings document
+
+=== [2/6] FAQs ===
+  Imported 24 FAQ documents
+
+=== [3/6] Testimonials ===
+  Imported 27 testimonial documents
+
+=== [4/6] Promotions ===
+  Imported 12 promo documents
+
+=== [5/6] Devices ===
+  Total rows: 4, published: 3
+  Processing device: Holo Active (slug: holo-active)
+  Device "Holo Active" imported (device-68e66ebc7c111edfa523e8cf)
+  Processing device: Holo Mini (slug: holo-mini)
+  Device "Holo Mini" imported (device-68debb24aa61035da66ccfd6)
+  Processing device: Holo Pro (slug: holo-pro)
+  Device "Holo Pro" imported (device-68dd45b17db0116baf9c4fee)
+  Imported 3 device documents
+
+=== [6/6] Blog posts ===
+  Total blog post rows: 73
+  Batch 1/2 complete (50 posts)
+  Batch 2/2 complete (23 posts)
+  Imported 73 blog post documents
+
+=== Migration complete ===
+Total documents: 140
+Total images uploaded: 167
+Total errors: 0
+Finished: 2026-03-04T20:39:07.446Z

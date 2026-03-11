@@ -7,18 +7,17 @@ const productLinks = [
   { label: 'Holo Active', href: '/devices/holo-active' },
   { label: 'Accessories', href: '/accessories' },
   { label: 'Compare Devices', href: '/compare' },
+  { label: 'Support', href: 'https://support.holoalert.ca/' },
 ]
 
 const programLinks = [
   { label: 'Referral Program', href: '/referral-program' },
-  { label: 'Savings Program', href: '/savings-program' },
 ]
 
 const companyLinks = [
   { label: 'About Us', href: '/about-us' },
   { label: 'Blog', href: '/blog' },
   { label: 'Testimonials', href: '/testimonials' },
-  { label: 'Emergency Contacts', href: '/emergency-contacts' },
 ]
 
 const legalLinks = [

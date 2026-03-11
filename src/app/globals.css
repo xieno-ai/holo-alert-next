@@ -5,21 +5,21 @@
 
 @theme {
   /* Typography — map next/font CSS variables to Tailwind font utilities */
-  --font-heading: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-heading: var(--font-instrument-sans), system-ui, sans-serif;
   --font-body: var(--font-instrument-sans), system-ui, sans-serif;
   --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
 
   /* Brand Colors — generates bg-brand-blue, text-brand-orange, etc. */
   /* Blue is LOCKED at #4294d8 — do not change */
   --color-brand-blue: #4294d8;
-  /* Orange CTA — refined from #f46036 for slightly more vibrancy */
-  --color-brand-orange: #f25c2c;
-  /* Near-black — warmed slightly from pure #171717 */
-  --color-brand-black: #181818;
-  /* Green for promo/success states */
-  --color-brand-green: #3ab55e;
-  /* Secondary text gray */
-  --color-brand-gray: #6b7280;
+  /* Orange CTA — per design-system.md */
+  --color-brand-orange: #f46036;
+  /* Near-black — per design-system.md */
+  --color-brand-black: #171717;
+  /* Green for promo/success states — per design-system.md */
+  --color-brand-green: #45b864;
+  /* Secondary text gray — per design-system.md */
+  --color-brand-gray: #787878;
   /* Light background */
   --color-brand-light: #f8fafc;
   /* White shorthand */

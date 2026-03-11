@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { GoogleTagManager } from '@next/third-parties/google'
-import { fraunces, instrumentSans } from '@/lib/fonts'
+import { instrumentSans } from '@/lib/fonts'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -24,9 +24,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${instrumentSans.variable}`}
+      className={`${instrumentSans.variable}`}
     >
-      <GoogleTagManager gtmId="GTM-N2J4XSL" />
+      {process.env.NODE_ENV === 'production' && <GoogleTagManager gtmId="GTM-N2J4XSL" />}
       <body className="antialiased">{children}</body>
     </html>
   )
