@@ -77,6 +77,16 @@ export const device = defineType({
       description: 'Additional product images — lifestyle shots, angles, etc.',
     }),
 
+    // === VARIANTS ===
+    defineField({
+      name: 'variants',
+      title: 'Product Variants',
+      type: 'array',
+      of: [defineArrayMember({ type: 'reference', to: [{ type: 'device' }] })],
+      description:
+        'Other device variants shown as selectable options on this product page (e.g., Holo Active Slim). Each referenced device must also reference this device in its own variants array.',
+    }),
+
     // === PRICING — Display strings (human-readable) ===
     defineField({
       name: 'monthlyPriceDisplay',
@@ -364,6 +374,13 @@ export const device = defineType({
       type: 'boolean',
       description: 'Uncheck to hide device from storefront without deleting it',
       initialValue: true,
+    }),
+    defineField({
+      name: 'isFeaturedHomepage',
+      title: 'Featured on Homepage',
+      type: 'boolean',
+      description: 'Enable on ONE device to use its hero image in the homepage feature diagram. Only one device should have this enabled at a time.',
+      initialValue: false,
     }),
 
     // === MIGRATION AID ===

@@ -1,12 +1,14 @@
-import Image from 'next/image'
-import Link from 'next/link'
+'use client'
 
-const steps = [
+import Image from 'next/image'
+import { useState } from 'react'
+
+const fallbackSteps = [
   {
     number: '1',
     photo: '/images/step-1.avif',
     title: 'Stay Safe and Connected',
-    description: 'One press of your button connects you with our 24/7 monitoring team, who will get you the help you need.',
+    description: 'One press of your button connects you with our 24/7 monitoring team, who will get you the help you need. See How It Works.',
     href: '/devices',
   },
   {
@@ -25,7 +27,30 @@ const steps = [
   },
 ]
 
-export default function HowItWorksSection() {
+interface SanityStep {
+  title: string
+  description: string
+  href: string
+  imageUrl: string | null
+}
+
+interface Props {
+  steps?: SanityStep[] | null
+}
+
+export default function HowItWorksSection({ steps: sanitySteps }: Props) {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+
+  const steps = sanitySteps
+    ? sanitySteps.map((s, i) => ({
+        number: String(i + 1),
+        photo: s.imageUrl ?? fallbackSteps[i]?.photo ?? '/images/step-1.avif',
+        title: s.title,
+        description: s.description,
+        href: s.href,
+      }))
+    : fallbackSteps
+
   return (
     <section id="how-it-works" className="bg-white pt-[9.25rem] pb-20">
       <div
@@ -42,46 +67,101 @@ export default function HowItWorksSection() {
           </h2>
         </div>
 
-        {/* 3-column photo card grid */}
+        {/* 3-column card grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[1.125rem]">
-          {steps.map((step) => (
-            <div
-              key={step.number}
-              className="relative rounded-2xl overflow-hidden group cursor-pointer border border-transparent hover:border-black/25 transition-colors"
-            >
-              <Image
-                src={step.photo}
-                alt={step.title}
-                width={600}
-                height={900}
-                className="w-full object-cover"
-                style={{ aspectRatio: '1/1.5' }}
-              />
-              {/* Overlay content */}
-              <div className="absolute inset-0 m-5 flex flex-col justify-between">
-                {/* Step number — top left */}
-                <p className="text-white font-semibold text-sm">{step.number}</p>
-                {/* Title + button — bottom */}
-                <div className="flex flex-col gap-3">
+          {steps.map((step, index) => {
+            const isActive = activeIndex === index
+            const paddedNumber = String(index + 1).padStart(2, '0')
+
+            return (
+              <div
+                key={step.number}
+                className="relative rounded-2xl overflow-hidden cursor-pointer"
+                style={{
+                  aspectRatio: '1/1.5',
+                  transition: 'background-color 0.4s ease, border-color 0.4s ease',
+                  backgroundColor: isActive ? '#ffffff' : 'transparent',
+                  border: isActive ? '1px solid #e5e5e5' : '1px solid transparent',
+                }}
+                onMouseEnter={() => setActiveIndex(index)}
+                onMouseLeave={() => setActiveIndex(null)}
+              >
+                {/* Photo — hidden when active */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    opacity: isActive ? 0 : 1,
+                    transition: 'opacity 0.4s ease',
+                  }}
+                >
+                  <Image
+                    src={step.photo}
+                    alt={step.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+
+                {/* Photo overlay content (inactive state) */}
+                <div
+                  className="absolute inset-0 m-5 flex flex-col justify-between"
+                  style={{
+                    opacity: isActive ? 0 : 1,
+                    transition: 'opacity 0.4s ease',
+                    pointerEvents: isActive ? 'none' : 'auto',
+                  }}
+                >
+                  <p className="text-white font-semibold text-sm">{paddedNumber}</p>
                   <h3 className="text-white font-heading text-xl font-semibold leading-snug">
                     {step.title}
                   </h3>
-                  <Link
-                    href={step.href}
-                    className="inline-flex items-center self-start px-5 py-2 bg-white text-brand-black text-sm font-semibold rounded-full hover:bg-white/90 transition-colors"
-                  >
-                    Explore
-                  </Link>
+                </div>
+
+                {/* Active state content (white card) */}
+                <div
+                  className="absolute inset-0 flex flex-col justify-between"
+                  style={{
+                    padding: '28px',
+                    opacity: isActive ? 1 : 0,
+                    transition: 'opacity 0.4s ease',
+                    pointerEvents: isActive ? 'auto' : 'none',
+                  }}
+                >
+                  {/* Step number top-left */}
+                  <p style={{ fontSize: '15px', fontWeight: 500, color: '#171717', margin: 0 }}>
+                    {paddedNumber}
+                  </p>
+
+                  {/* Bottom content */}
+                  <div>
+                    <h3
+                      style={{
+                        fontSize: 'clamp(24px, 2.5vw, 32px)',
+                        fontWeight: 700,
+                        color: '#171717',
+                        lineHeight: 1.15,
+                        margin: '0 0 16px 0',
+                      }}
+                    >
+                      {step.title}
+                    </h3>
+                    <p
+                      style={{
+                        fontSize: '14px',
+                        lineHeight: 1.6,
+                        color: '#787878',
+                        margin: '0 0 24px 0',
+                      }}
+                    >
+                      {step.description}
+                    </p>
+
+                  </div>
                 </div>
               </div>
-              {/* Arrow icon — bottom right */}
-              <div className="absolute bottom-5 right-5 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                  <path d="M2 7h10M8 3l4 4-4 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "createdAt": "2026-03-10T21:14:21.269Z",
+  "createdAt": "2026-03-11T18:42:22.842Z",
   "workspaces": [
     {
       "name": "holo-alert",
@@ -13,7 +13,7 @@
         "enabled": false,
         "__internal": {}
       },
-      "schema": "20d98a12.create-schema.json",
+      "schema": "313649a3.create-schema.json",
       "tools": "ba47da56.create-tools.json"
     }
   ],

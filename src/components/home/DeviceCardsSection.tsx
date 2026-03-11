@@ -26,10 +26,13 @@ interface Device {
   slug: { current: string }
   tagline?: string
   monthlyPriceDisplay?: string
+  featuresImage?: object
   pricingCardImage?: object
   pricingCardSubhead?: string
   pricingCardBenefits?: string[]
   pricingCardOrder?: number
+  variantNames?: string[]
+  isVariantChild?: boolean
 }
 
 export default async function DeviceCardsSection() {
@@ -39,6 +42,9 @@ export default async function DeviceCardsSection() {
   } catch {
     // If Sanity is unreachable, render empty
   }
+
+  // Hide devices that exist only as variants of another device (e.g. Holo Active Slim)
+  devices = devices.filter((d) => !d.isVariantChild)
 
   const featuredIndex = devices.findIndex((d) =>
     d.name?.toLowerCase().includes('pro')
@@ -76,8 +82,9 @@ export default async function DeviceCardsSection() {
               borderTop: isFeatured ? '3px solid #4294d8' : 'none',
             }
 
-            const imgSrc = device.pricingCardImage
-              ? urlFor(device.pricingCardImage).width(400).height(400).url()
+            const cardImage = device.featuresImage ?? device.pricingCardImage
+            const imgSrc = cardImage
+              ? urlFor(cardImage).width(400).height(400).url()
               : null
 
             return (
@@ -153,6 +160,18 @@ export default async function DeviceCardsSection() {
                 >
                   Explore {device.name}
                 </Link>
+
+                {device.variantNames && device.variantNames.length > 0 && (
+                  <p style={{ fontSize: '12px', color: '#888', textAlign: 'center', margin: '4px 0 0', lineHeight: 1.4 }}>
+                    Also available in{' '}
+                    <Link
+                      href={`/devices/${device.slug?.current}`}
+                      style={{ color: '#4294d8', textDecoration: 'none', fontWeight: 600 }}
+                    >
+                      {device.variantNames.join(' & ')}
+                    </Link>
+                  </p>
+                )}
               </div>
             )
           })}

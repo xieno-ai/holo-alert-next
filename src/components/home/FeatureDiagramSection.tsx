@@ -3,7 +3,13 @@
 import { useEffect, useRef } from 'react'
 import Image from 'next/image'
 
-export default function FeatureDiagramSection() {
+interface Props {
+  featuredImageUrl?: string | null
+  featuredDeviceName?: string
+  watermarkUrl?: string | null
+}
+
+export default function FeatureDiagramSection({ featuredImageUrl, featuredDeviceName = 'Holo Device', watermarkUrl }: Props) {
   const bgRef = useRef<HTMLDivElement>(null)
   const productRef = useRef<HTMLDivElement>(null)
   const sectionRef = useRef<HTMLElement>(null)
@@ -56,7 +62,7 @@ export default function FeatureDiagramSection() {
           transition: 'transform 1.3s cubic-bezier(0.16,1,0.3,1), opacity 1s ease',
         }}
       >
-        <Image src="/images/Frame-244.svg" alt="" width={1400} height={200} style={{ width: '100%', opacity: 0.85 }} />
+        <Image src={watermarkUrl ?? '/images/Frame-244.svg'} alt="" width={1400} height={200} style={{ width: '100%', opacity: 0.85 }} />
       </div>
 
       <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
@@ -94,8 +100,8 @@ export default function FeatureDiagramSection() {
             }}
           >
             <Image
-              src="/images/holoactive_fronthero.webp"
-              alt="Holo Mini"
+              src={featuredImageUrl ?? '/images/holoactive_fronthero.webp'}
+              alt={featuredDeviceName}
               width={520}
               height={520}
               style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}

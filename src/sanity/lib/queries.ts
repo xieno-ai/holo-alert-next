@@ -1,14 +1,16 @@
 import { defineQuery } from 'next-sanity'
 
 export const SITE_SETTINGS_QUERY = defineQuery(
-  `*[_type == "siteSettings"][0]{ siteTitle, phoneNumber, email, socialLinks, address }`
+  `*[_type == "siteSettings"][0]{ siteTitle, phoneNumber, email, socialLinks, address, logo{ ..., asset-> } }`
 )
 
 export const DEVICES_QUERY = defineQuery(
   `*[_type == "device" && isActive == true] | order(pricingCardOrder asc) {
     _id, name, slug, tagline, monthlyPriceDisplay, annualPriceDisplay,
-    devicePrice, reducedDevicePrice, pricingCardImage, pricingCardSubhead,
-    pricingCardSubscription, pricingCardBenefits, pricingCardOrder
+    devicePrice, reducedDevicePrice, featuresImage, pricingCardImage, pricingCardSubhead,
+    pricingCardSubscription, pricingCardBenefits, pricingCardOrder,
+    "variantNames": variants[]->name,
+    "isVariantChild": count(*[_type == "device" && ^._id in variants[]._ref && pricingCardOrder < ^.pricingCardOrder]) > 0
   }`
 )
 
@@ -34,7 +36,13 @@ export const DEVICE_QUERY = defineQuery(
     pricingCardSubscription, pricingCardBenefits, isActive,
     hasCaregiverApp,
     caregiverAppBackgroundImage{ ..., asset->{ url, metadata{ dimensions } } },
-    caregiverAppForegroundImage{ ..., asset->{ url, metadata{ dimensions } } }
+    caregiverAppForegroundImage{ ..., asset->{ url, metadata{ dimensions } } },
+    variants[]->{
+      _id, name, slug, tagline, description, mainImage, gallery,
+      monthlyPriceDisplay, annualPriceDisplay, devicePrice, reducedDevicePrice,
+      annualBonusMonths, stripePriceIdMonthly, stripePriceIdYearly, stripePriceIdDevice,
+      specs, pricingCardBenefits, fallAlertDisclaimer
+    }
   }`
 )
 
@@ -81,6 +89,26 @@ export const BLOG_POSTS_LATEST_QUERY = defineQuery(
 export const BLOG_POSTS_RELATED_QUERY = defineQuery(
   `*[_type == "blogPost" && slug.current != $slug] | order(publishedAt desc) [0...3] {
     _id, title, slug, publishedAt, mainImage, category
+  }`
+)
+
+export const HOME_PAGE_QUERY = defineQuery(
+  `*[_type == "homePage"][0]{
+    heroImage{ ..., asset->{ url, metadata{ dimensions } } },
+    heroImageSlot1{ ..., asset->{ url, metadata{ dimensions } } },
+    heroImageSlot2{ ..., asset->{ url, metadata{ dimensions } } },
+    heroImageSlot3{ ..., asset->{ url, metadata{ dimensions } } },
+    howItWorksSteps[]{ _key, title, description, href, image{ ..., asset->{ url, metadata{ dimensions } } } },
+    whyChooseImage{ ..., asset->{ url, metadata{ dimensions } } },
+    certifications[]{ _key, name, description, scaleUp, image{ ..., asset->{ url, metadata{ dimensions } } } },
+    trustBarLogos[]{ _key, alt, asset->{ url, metadata{ dimensions } } },
+    featureDiagramWatermark{ ..., asset->{ url, metadata{ dimensions } } }
+  }`
+)
+
+export const FEATURED_DEVICE_IMAGE_QUERY = defineQuery(
+  `*[_type == "device" && isFeaturedHomepage == true][0]{
+    name, mainImage{ ..., asset->{ url, metadata{ dimensions } } }
   }`
 )
 

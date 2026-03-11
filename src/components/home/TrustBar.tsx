@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 
-const logos = [
+const fallbackLogos = [
   { src: '/images/Frame-560.svg',  alt: 'Partner logo', w: 220, h: 110 },
   { src: '/images/Frame-561.avif', alt: 'Partner logo', w: 220, h: 110 },
   { src: '/images/Frame-562.svg',  alt: 'Partner logo', w: 220, h: 110 },
@@ -13,9 +13,21 @@ const logos = [
   { src: '/images/Frame-568.avif', alt: 'Partner logo', w: 220, h: 110 },
 ]
 
-export default function TrustBar() {
+interface SanityLogo {
+  url: string
+  alt: string
+}
+
+interface Props {
+  logos?: SanityLogo[] | null
+}
+
+export default function TrustBar({ logos: sanityLogos }: Props) {
+  const logos = sanityLogos
+    ? sanityLogos.map((l) => ({ src: l.url, alt: l.alt, w: 220, h: 110 }))
+    : fallbackLogos
   return (
-    <section className="py-10 overflow-hidden relative bg-white border-b border-gray-100">
+    <section className="py-10 overflow-hidden relative bg-white">
       <style>{`
         @keyframes marquee {
           from { transform: translateX(0); }

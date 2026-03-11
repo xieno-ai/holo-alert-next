@@ -4,7 +4,7 @@ import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './src/sanity/schemas'
 
 const singletonActions = new Set(['publish', 'discardChanges', 'restore'])
-const singletonTypes = new Set(['siteSettings'])
+const singletonTypes = new Set(['siteSettings', 'homePage'])
 
 export default defineConfig({
   name: 'holo-alert',
@@ -21,6 +21,10 @@ export default defineConfig({
               .title('Site Settings')
               .id('siteSettings')
               .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+            S.listItem()
+              .title('Home Page')
+              .id('homePage')
+              .child(S.document().schemaType('homePage').documentId('homePage')),
             S.documentTypeListItem('device').title('Devices'),
             S.documentTypeListItem('addon').title('Add-ons'),
             S.documentTypeListItem('blogPost').title('Blog Posts'),
@@ -28,6 +32,8 @@ export default defineConfig({
             S.documentTypeListItem('testimonial').title('Testimonials'),
             S.documentTypeListItem('promo').title('Promotions'),
             S.documentTypeListItem('legalPage').title('Legal Pages'),
+            S.divider(),
+            S.documentTypeListItem('emergencyContactSubmission').title('Emergency Contact Submissions'),
           ]),
     }),
     visionTool(),

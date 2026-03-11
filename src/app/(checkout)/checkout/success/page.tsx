@@ -1,9 +1,26 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import Stripe from 'stripe'
+import HeaderServer from '@/components/layout/HeaderServer'
 import SuccessTracking from './SuccessTracking'
+import SuccessContent from './SuccessContent'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+
+export interface OrderItem {
+  name: string
+  isRecurring: boolean
+  interval: string
+}
+
+export interface OrderData {
+  customerName: string
+  customerEmail: string
+  deviceName: string
+  plan: string
+  items: OrderItem[]
+  amountTotal: number
+  currency: string
+}
 
 export default async function SuccessPage({
   searchParams,
@@ -19,93 +36,140 @@ export default async function SuccessPage({
   if (!session_id && !payment_intent) redirect('/checkout')
 
   let isComplete = false
-  let customerEmail = 'your email address'
-  let deviceName = 'Holo Alert Device'
-  let amountTotal = 0
-  let currency = 'CAD'
   let trackingId = session_id ?? payment_intent ?? ''
-
-  if (session_id) {
-    // Legacy embedded checkout session flow
-    const session = await stripe.checkout.sessions.retrieve(session_id, {
-      expand: ['line_items'],
-    })
-    isComplete = session.status === 'complete'
-    customerEmail = session.customer_details?.email ?? customerEmail
-    deviceName = session.metadata?.deviceName ?? deviceName
-    amountTotal = session.amount_total ?? 0
-    currency = session.currency ?? 'cad'
-  } else if (payment_intent) {
-    // Subscription / PaymentIntent flow
-    if (redirect_status !== 'succeeded') {
-      // Payment failed or was cancelled
-      redirect('/checkout')
-    }
-    const pi = await stripe.paymentIntents.retrieve(payment_intent)
-    isComplete = pi.status === 'succeeded'
-    amountTotal = pi.amount ?? 0
-    currency = pi.currency ?? 'cad'
-
-    // Get customer email + device name from subscription metadata via customer
-    if (pi.customer) {
-      try {
-        const customer = await stripe.customers.retrieve(pi.customer as string)
-        if (!('deleted' in customer)) {
-          customerEmail = customer.email ?? customerEmail
-          deviceName = customer.metadata?.device_name ?? deviceName
-        }
-      } catch { /* non-critical */ }
-    }
-    // Try to get device name from invoice metadata
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const piAny = pi as any
-    if (piAny.invoice) {
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const invoice = await (stripe.invoices as any).retrieve(piAny.invoice, { expand: ['subscription'] })
-        deviceName = invoice?.subscription?.metadata?.device_name ?? deviceName
-      } catch { /* non-critical */ }
-    }
+  let orderData: OrderData = {
+    customerName: '',
+    customerEmail: '',
+    deviceName: 'Holo Alert Device',
+    plan: '',
+    items: [],
+    amountTotal: 0,
+    currency: 'CAD',
   }
 
+  try {
+    if (session_id) {
+      const session = await stripe.checkout.sessions.retrieve(session_id, {
+        expand: ['line_items'],
+      })
+      isComplete = session.status === 'complete'
+      orderData.customerEmail = session.customer_details?.email ?? ''
+      orderData.customerName = session.customer_details?.name ?? ''
+      orderData.deviceName = session.metadata?.deviceName ?? orderData.deviceName
+      orderData.amountTotal = session.amount_total ?? 0
+      orderData.currency = session.currency ?? 'cad'
+    } else if (payment_intent) {
+      if (redirect_status !== 'succeeded') {
+        redirect('/checkout')
+      }
+      const pi = await stripe.paymentIntents.retrieve(payment_intent)
+      isComplete = pi.status === 'succeeded'
+      orderData.amountTotal = pi.amount ?? 0
+      orderData.currency = pi.currency ?? 'cad'
+
+      // Get customer details
+      if (pi.customer) {
+        try {
+          const customer = await stripe.customers.retrieve(pi.customer as string)
+          if (!('deleted' in customer)) {
+            orderData.customerEmail = customer.email ?? ''
+            orderData.customerName = customer.name ?? ''
+            orderData.deviceName = customer.metadata?.device_name ?? orderData.deviceName
+          }
+        } catch { /* non-critical */ }
+      }
+
+      // Get subscription details + line items from invoice
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const piAny = pi as any
+      if (piAny.invoice) {
+        try {
+          const invoiceRes = await fetch(
+            `https://api.stripe.com/v1/invoices/${piAny.invoice}?expand[]=subscription&expand[]=lines.data`,
+            { headers: { Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}` } }
+          )
+          const invoiceData = await invoiceRes.json() as {
+            subscription?: {
+              metadata?: Record<string, string>
+            }
+            lines?: {
+              data: {
+                description?: string
+                price?: { recurring?: { interval?: string } }
+              }[]
+            }
+          }
+
+          // Get metadata from subscription
+          const meta = invoiceData.subscription?.metadata ?? {}
+          orderData.deviceName = meta.device_name ?? orderData.deviceName
+          orderData.customerName = meta.purchaser_name ?? orderData.customerName
+          orderData.plan = meta.plan ?? ''
+
+          // Get line items
+          for (const line of invoiceData.lines?.data ?? []) {
+            const recurring = line.price?.recurring
+            orderData.items.push({
+              name: line.description ?? 'Item',
+              isRecurring: !!recurring,
+              interval: recurring?.interval ?? '',
+            })
+          }
+        } catch { /* non-critical */ }
+      }
+    }
+  } catch {
+    // Stripe retrieval failed — show the page with whatever data we have
+    // In production, this would only happen with invalid/expired IDs
+    console.warn('[success] Could not retrieve payment details from Stripe')
+  }
+
+  // If redirect_status says succeeded, trust it even if Stripe retrieval failed
+  if (!isComplete && redirect_status === 'succeeded') {
+    isComplete = true
+  }
+
+  // Extract first name for greeting
+  const firstName = orderData.customerName
+    ? orderData.customerName.split(' ')[0]
+    : ''
+
   return (
-    <div style={{ minHeight: '100vh', background: '#f8f9fa', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', fontFamily: 'Instrument Sans, sans-serif' }}>
-      {isComplete ? (
-        <div style={{ background: '#fff', borderRadius: '20px', border: '1px solid #e8e8e8', padding: '56px 48px', maxWidth: '520px', width: '100%', textAlign: 'center' }}>
-          <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#f0faf3', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 28px' }}>
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <path d="M6 16L12 22L26 8" stroke="#45b864" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+    <>
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <HeaderServer />
+      </div>
+      <main className="min-h-screen bg-white" style={{ paddingTop: '70px' }}>
+        {isComplete ? (
+          <SuccessContent
+            firstName={firstName}
+            email={orderData.customerEmail}
+            deviceName={orderData.deviceName}
+            plan={orderData.plan}
+            items={orderData.items}
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center py-32 px-6 text-center">
+            <p className="text-brand-gray text-base">
+              Your payment is being processed. Please check your email for confirmation.
+            </p>
+            <a
+              href="/"
+              className="mt-6 text-brand-blue text-sm font-medium hover:underline"
+            >
+              Return home &rarr;
+            </a>
           </div>
-          <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#171717', letterSpacing: '-0.01em', margin: '0 0 12px' }}>
-            You&apos;re all set!
-          </h1>
-          <p style={{ fontSize: '15px', color: '#555', lineHeight: 1.6, margin: '0 0 32px' }}>
-            Your Holo Alert subscription is confirmed. A receipt has been sent to{' '}
-            <strong style={{ color: '#171717' }}>{customerEmail}</strong>.
-          </p>
-          <div style={{ background: '#f8f9fa', borderRadius: '12px', padding: '20px 24px', marginBottom: '32px', textAlign: 'left' }}>
-            <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#aaa', marginBottom: '12px' }}>What happens next</div>
-            {["We'll ship your device within 1–2 business days", "You'll receive a tracking number by email", 'Device arrives in 3–6 business days', 'Monitoring begins when you activate'].map((step, i) => (
-              <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', marginBottom: i < 3 ? '10px' : 0 }}>
-                <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#4294d8', color: '#fff', fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>{i + 1}</div>
-                <span style={{ fontSize: '13px', color: '#444', lineHeight: 1.5 }}>{step}</span>
-              </div>
-            ))}
-          </div>
-          <Link href="/" style={{ display: 'block', background: '#171717', color: '#fff', fontSize: '13px', fontWeight: 700, padding: '14px 24px', borderRadius: '10px', textDecoration: 'none', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-            Return to Holo Alert
-          </Link>
-        </div>
-      ) : (
-        <div style={{ textAlign: 'center' }}>
-          <p style={{ fontSize: '16px', color: '#555' }}>Your payment is being processed. Please check your email for confirmation.</p>
-          <Link href="/" style={{ display: 'inline-block', marginTop: '24px', color: '#4294d8', fontSize: '14px', fontWeight: 500, textDecoration: 'none' }}>Return home →</Link>
-        </div>
-      )}
-      {isComplete && (
-        <SuccessTracking sessionId={trackingId} deviceName={deviceName} total={amountTotal} currency={currency} />
-      )}
-    </div>
+        )}
+        {isComplete && (
+          <SuccessTracking
+            sessionId={trackingId}
+            deviceName={orderData.deviceName}
+            total={orderData.amountTotal}
+            currency={orderData.currency}
+          />
+        )}
+      </main>
+    </>
   )
 }

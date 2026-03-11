@@ -14,8 +14,9 @@ const exploreLinks = [
   { label: 'Accessories', href: '/accessories' },
 ]
 
-const programLinks = [
-  { label: 'Referral Program', href: '/referral-program' },
+const toolsLinks = [
+  { label: 'Find Your Device', href: '/quiz' },
+  { label: 'Compare Devices', href: '/compare' },
 ]
 
 const DEFAULT_PRODUCT_CARDS = [
@@ -30,7 +31,7 @@ interface ProductCard {
   img: string
 }
 
-export default function Header({ productCards = DEFAULT_PRODUCT_CARDS }: { productCards?: ProductCard[] }) {
+export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogoUrl }: { productCards?: ProductCard[]; badgeLogoUrl?: string }) {
   const [megaOpen, setMegaOpen] = useState(false)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -54,13 +55,26 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS }: { produ
     >
       {/* Main nav row */}
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 40px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '70px', gap: '32px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', height: '70px' }}>
 
           {/* Left: nav links (desktop only) */}
           <nav
             className="hidden lg:flex items-center"
             style={{ gap: '28px' }}
           >
+            {/* Badge logo */}
+            {badgeLogoUrl && (
+              <Link href="/" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                <Image
+                  src={badgeLogoUrl}
+                  alt="Holo Alert"
+                  width={36}
+                  height={36}
+                  style={{ objectFit: 'contain' }}
+                />
+              </Link>
+            )}
+
             {/* Solutions mega-menu trigger */}
             <div
               onMouseEnter={openMega}
@@ -89,7 +103,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS }: { produ
             </div>
 
             <Link
-              href="/testimonials"
+              href="/quiz"
               style={{
                 fontFamily: 'var(--font-instrument-sans), sans-serif',
                 fontSize: '15px',
@@ -100,7 +114,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS }: { produ
               onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.75')}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
             >
-              Testimonials
+              Find Your Device
             </Link>
 
             <Link
@@ -136,7 +150,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS }: { produ
           </Link>
 
           {/* Right: phone + CTA + mobile hamburger */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', justifySelf: 'end' }}>
             {/* Phone — desktop only */}
             <a
               href="tel:18884450192"
@@ -156,7 +170,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS }: { produ
 
             {/* CTA button — desktop only */}
             <Link
-              href="/devices"
+              href="/#products"
               className="hidden lg:inline-flex items-center justify-center"
               style={{
                 background: megaOpen ? '#171717' : '#4294d8',
@@ -259,9 +273,9 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS }: { produ
               </div>
               <div>
                 <p style={{ fontFamily: 'var(--font-instrument-sans), sans-serif', fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#a0a0a0', marginBottom: '14px' }}>
-                  Programs
+                  Tools
                 </p>
-                {programLinks.map((link) => (
+                {toolsLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
@@ -284,24 +298,24 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS }: { produ
             </div>
 
             {/* Right: product image cards */}
-            <div style={{ display: 'flex', gap: '12px', flex: 1 }}>
+            <div style={{ display: 'flex', gap: '10px', flex: 1, maxWidth: '420px' }}>
               {productCards.map((card) => (
                 <Link
                   key={card.href}
                   href={card.href}
-                  style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px', textDecoration: 'none' }}
+                  style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', textDecoration: 'none', maxWidth: '130px' }}
                 >
                   <div style={{ width: '100%', aspectRatio: '1 / 1', overflow: 'hidden', borderRadius: '4px', background: '#f5f5f5' }}>
                     <Image
                       src={card.img}
                       alt={card.label}
-                      width={300}
-                      height={300}
+                      width={200}
+                      height={200}
                       style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                       unoptimized
                     />
                   </div>
-                  <span style={{ fontFamily: 'var(--font-instrument-sans), sans-serif', fontSize: '13px', color: '#333', textAlign: 'center' }}>
+                  <span style={{ fontFamily: 'var(--font-instrument-sans), sans-serif', fontSize: '12px', color: '#333', textAlign: 'center' }}>
                     {card.label}
                   </span>
                 </Link>

@@ -1,6 +1,10 @@
 import Image from 'next/image'
 
-export default function WhyChooseSection() {
+interface Props {
+  imageUrl?: string | null
+}
+
+export default function WhyChooseSection({ imageUrl }: Props) {
   return (
     <section style={{ background: '#fff', padding: '0 40px' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
@@ -19,7 +23,7 @@ export default function WhyChooseSection() {
           {/* Top-right: image */}
           <div style={{ borderBottom: '1px solid #e0e0e0', padding: '40px 0 40px 48px' }}>
             <Image
-              src="/images/with-grandchildren.webp"
+              src={imageUrl ?? '/images/with-grandchildren.webp'}
               alt="Canadian senior with family"
               width={600}
               height={400}

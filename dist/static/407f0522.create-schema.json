@@ -1,0 +1,1805 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "description": "Short one-line product tagline for pricing cards and meta",
+        "name": "tagline",
+        "type": "string"
+      },
+      {
+        "description": "Rich text description — converted from Webflow HTML via html-to-pte",
+        "of": [
+          {
+            "marks": {
+              "annotations": [
+                {
+                  "i18nTitleKey": "inputs.portable-text.annotation.link",
+                  "options": {
+                    "modal": {
+                      "type": "popover"
+                    }
+                  },
+                  "fields": [
+                    {
+                      "validation": [
+                        {
+                          "rules": [
+                            {
+                              "flag": "uri",
+                              "constraint": {
+                                "options": {
+                                  "scheme": [
+                                    "/^http$/",
+                                    "/^https$/",
+                                    "/^tel$/",
+                                    "/^mailto$/"
+                                  ],
+                                  "allowRelative": true,
+                                  "relativeOnly": false,
+                                  "allowCredentials": false
+                                }
+                              }
+                            }
+                          ],
+                          "level": "error"
+                        }
+                      ],
+                      "description": "A valid web, email, phone, or relative link.",
+                      "name": "href",
+                      "type": "url",
+                      "title": "Link"
+                    }
+                  ],
+                  "name": "link",
+                  "type": "object"
+                }
+              ],
+              "decorators": [
+                {
+                  "value": "strong",
+                  "title": "Strong"
+                },
+                {
+                  "value": "em",
+                  "title": "Italic"
+                },
+                {
+                  "value": "code",
+                  "title": "Code"
+                },
+                {
+                  "value": "underline",
+                  "title": "Underline"
+                },
+                {
+                  "value": "strike-through",
+                  "title": "Strike"
+                }
+              ]
+            },
+            "lists": [
+              {
+                "value": "bullet",
+                "title": "Bulleted list"
+              },
+              {
+                "value": "number",
+                "title": "Numbered list"
+              }
+            ],
+            "styles": [
+              {
+                "value": "normal",
+                "title": "Normal"
+              },
+              {
+                "value": "h1",
+                "title": "Heading 1"
+              },
+              {
+                "value": "h2",
+                "title": "Heading 2"
+              },
+              {
+                "value": "h3",
+                "title": "Heading 3"
+              },
+              {
+                "value": "h4",
+                "title": "Heading 4"
+              },
+              {
+                "value": "h5",
+                "title": "Heading 5"
+              },
+              {
+                "value": "h6",
+                "title": "Heading 6"
+              },
+              {
+                "value": "blockquote",
+                "title": "Quote"
+              }
+            ],
+            "of": [],
+            "type": "block"
+          }
+        ],
+        "name": "description",
+        "type": "array"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Alt Text"
+          }
+        ],
+        "name": "mainImage",
+        "type": "image",
+        "title": "Hero Product Image"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Alt Text"
+          }
+        ],
+        "name": "featuresImage",
+        "type": "image",
+        "title": "Device Features Image"
+      },
+      {
+        "description": "Additional product images — lifestyle shots, angles, etc.",
+        "of": [
+          {
+            "options": {
+              "hotspot": true
+            },
+            "fields": [
+              {
+                "name": "alt",
+                "type": "string",
+                "title": "Alt Text"
+              }
+            ],
+            "type": "image"
+          }
+        ],
+        "name": "gallery",
+        "type": "array"
+      },
+      {
+        "description": "Other device variants shown as selectable options on this product page (e.g., Holo Active Slim). Each referenced device must also reference this device in its own variants array.",
+        "of": [
+          {
+            "to": [
+              {
+                "type": "device"
+              }
+            ],
+            "type": "reference",
+            "title": "Reference to device"
+          }
+        ],
+        "name": "variants",
+        "type": "array",
+        "title": "Product Variants"
+      },
+      {
+        "description": "Display-only string, e.g. \"from $64.95/month\". Not used for checkout.",
+        "name": "monthlyPriceDisplay",
+        "type": "string"
+      },
+      {
+        "description": "Display-only string, e.g. \"779.95\". Not used for checkout.",
+        "name": "annualPriceDisplay",
+        "type": "string"
+      },
+      {
+        "description": "One-time device fee dollar amount — DISPLAY ONLY. Use stripePriceIdDevice for checkout.",
+        "name": "devicePrice",
+        "type": "number",
+        "title": "Device Price (Display)"
+      },
+      {
+        "description": "Sale/promotional device price — DISPLAY ONLY.",
+        "name": "reducedDevicePrice",
+        "type": "number",
+        "title": "Reduced Device Price (Display)"
+      },
+      {
+        "initialValue": 0,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              },
+              {
+                "flag": "max",
+                "constraint": 6
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Number of free bonus months added to annual subscriptions (e.g. 2 = \"14 months for the price of 12\"). Set to 0 or leave empty for no bonus.",
+        "name": "annualBonusMonths",
+        "type": "number",
+        "title": "Annual Plan — Bonus Months"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "regex",
+                "constraint": {
+                  "pattern": "/^price_/",
+                  "name": "Stripe Price ID",
+                  "invert": false
+                }
+              }
+            ],
+            "level": "warning",
+            "message": "Should start with \"price_\" — paste Price ID from Stripe dashboard, not the payment link URL"
+          }
+        ],
+        "description": "Paste the Stripe Price ID (starts with price_). Find it in Stripe Dashboard → Products → [Device Name] → Prices.",
+        "name": "stripePriceIdMonthly",
+        "type": "string",
+        "title": "Stripe Price ID — Monthly"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "regex",
+                "constraint": {
+                  "pattern": "/^price_/",
+                  "name": "Stripe Price ID",
+                  "invert": false
+                }
+              }
+            ],
+            "level": "warning",
+            "message": "Should start with \"price_\" — paste Price ID from Stripe dashboard, not the payment link URL"
+          }
+        ],
+        "description": "Paste the Stripe Price ID (starts with price_). Find it in Stripe Dashboard → Products → [Device Name] → Prices.",
+        "name": "stripePriceIdYearly",
+        "type": "string",
+        "title": "Stripe Price ID — Yearly"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "regex",
+                "constraint": {
+                  "pattern": "/^price_/",
+                  "name": "Stripe Price ID",
+                  "invert": false
+                }
+              }
+            ],
+            "level": "warning",
+            "message": "Should start with \"price_\" — paste Price ID from Stripe dashboard, not the payment link URL"
+          }
+        ],
+        "description": "Paste the Stripe Price ID (starts with price_). Find it in Stripe Dashboard → Products → [Device Name] → Prices.",
+        "name": "stripePriceIdDevice",
+        "type": "string",
+        "title": "Stripe Price ID — Device (One-time)"
+      },
+      {
+        "description": "Spec #1=Height, Spec #2=Width, Spec #3=Weight, Spec #4=Connectivity, Spec #5=Emergency Mode. Webflow stored these as 5 unnamed columns — labels must be added during Phase 3 import.",
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "label",
+                "type": "string"
+              },
+              {
+                "name": "value",
+                "type": "string"
+              }
+            ],
+            "type": "object",
+            "name": "spec"
+          }
+        ],
+        "name": "specs",
+        "type": "array",
+        "title": "Product Specs"
+      },
+      {
+        "description": "Small label above the features heading. Defaults to \"Built For Real Life\".",
+        "name": "featuresSectionEyebrow",
+        "type": "string",
+        "title": "Features Section — Eyebrow Label"
+      },
+      {
+        "description": "Main heading for the features section. Defaults to \"Why [device name]?\".",
+        "name": "featuresSectionHeading",
+        "type": "string",
+        "title": "Features Section — Heading"
+      },
+      {
+        "description": "Features shown in the scroll-snapping features section. Each feature has a title, description, and image.",
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "name": "content",
+                "type": "text"
+              },
+              {
+                "options": {
+                  "hotspot": true
+                },
+                "description": "Image displayed in the right panel when this feature is active",
+                "fields": [
+                  {
+                    "name": "alt",
+                    "type": "string",
+                    "title": "Alt Text"
+                  }
+                ],
+                "name": "image",
+                "type": "image",
+                "title": "Feature Image"
+              }
+            ],
+            "type": "object",
+            "name": "feature"
+          }
+        ],
+        "name": "features",
+        "type": "array",
+        "title": "Device Features"
+      },
+      {
+        "description": "Webflow stored as 3 pairs of How it Works Image/Content columns.",
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "content",
+                "type": "text",
+                "title": "Step Content"
+              },
+              {
+                "options": {
+                  "hotspot": true
+                },
+                "fields": [
+                  {
+                    "name": "alt",
+                    "type": "string",
+                    "title": "Alt Text"
+                  }
+                ],
+                "name": "image",
+                "type": "image",
+                "title": "Step Image"
+              }
+            ],
+            "type": "object",
+            "name": "step"
+          }
+        ],
+        "name": "howItWorksSteps",
+        "type": "array"
+      },
+      {
+        "description": "Webflow stored as 5 Accessory Name + 5 Accessory Image columns.",
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "options": {
+                  "hotspot": true
+                },
+                "fields": [
+                  {
+                    "name": "alt",
+                    "type": "string",
+                    "title": "Alt Text"
+                  }
+                ],
+                "name": "image",
+                "type": "image"
+              }
+            ],
+            "type": "object",
+            "name": "accessory"
+          }
+        ],
+        "name": "accessories",
+        "type": "array"
+      },
+      {
+        "options": {
+          "accept": "video/*"
+        },
+        "description": "Upload an MP4 directly — Sanity will host it. Up to 25 seconds, compressed for web.",
+        "name": "ambientVideo",
+        "type": "file",
+        "title": "Ambient Loop Video"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Vimeo URL for product explainer video lightbox",
+        "name": "videoUrl",
+        "type": "url",
+        "title": "Product Video URL"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Alt Text"
+          }
+        ],
+        "name": "videoThumbnail",
+        "type": "image",
+        "title": "Video Thumbnail Image"
+      },
+      {
+        "description": "Subtitle shown on the pricing card component",
+        "name": "pricingCardSubhead",
+        "type": "string"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Alt Text"
+          }
+        ],
+        "name": "pricingCardImage",
+        "type": "image"
+      },
+      {
+        "description": "Display sort order for pricing cards on the compare/products page (1 = first)",
+        "name": "pricingCardOrder",
+        "type": "number"
+      },
+      {
+        "description": "e.g. \"from $54.95/month\" — text displayed on pricing card",
+        "name": "pricingCardSubscription",
+        "type": "string",
+        "title": "Pricing Card Subscription Label"
+      },
+      {
+        "description": "Bullet points shown on pricing card. Webflow stored as 5 separate Benefit columns. HTML tags stripped during import.",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "pricingCardBenefits",
+        "type": "array"
+      },
+      {
+        "initialValue": false,
+        "description": "Enable to show the Caregiver Connected section on this product page",
+        "name": "hasCaregiverApp",
+        "type": "boolean",
+        "title": "Has Caregiver App Section"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "description": "Full-bleed background image for the left panel of the Caregiver Connected section",
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Alt Text"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "caregiverAppBackgroundImage",
+        "type": "image",
+        "title": "Caregiver App — Background Image"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "description": "App screenshot displayed in the foreground of the left panel — shows the caregiver app UI",
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Alt Text"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "caregiverAppForegroundImage",
+        "type": "image",
+        "title": "Caregiver App — Foreground Image (App Screenshot)"
+      },
+      {
+        "description": "Legal disclaimer text about fall detection limitations",
+        "name": "fallAlertDisclaimer",
+        "type": "string",
+        "title": "Fall Detection Disclaimer"
+      },
+      {
+        "description": "e.g. \"Ships within 3-5 business days\"",
+        "name": "shippingTimeline",
+        "type": "string"
+      },
+      {
+        "initialValue": true,
+        "description": "Uncheck to hide device from storefront without deleting it",
+        "name": "isActive",
+        "type": "boolean",
+        "title": "Active (Currently Sold)"
+      },
+      {
+        "description": "Webflow CMS Item ID — used during Phase 3 import to prevent duplicates. Can be removed post-migration.",
+        "hidden": true,
+        "name": "webflowId",
+        "type": "string",
+        "title": "Webflow Item ID"
+      }
+    ],
+    "name": "device",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "One-liner shown on the add-on toggle card (e.g. \"2-year device warranty\")",
+        "name": "shortDescription",
+        "type": "string"
+      },
+      {
+        "rows": 3,
+        "description": "Expanded description shown when the user opens the add-on details",
+        "name": "description",
+        "type": "text",
+        "title": "Full Description"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Price shown on the card when customer selects the Monthly plan. Display only — use Stripe fields for checkout.",
+        "name": "priceMonthly",
+        "type": "number",
+        "title": "Monthly Price (Display)"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Price shown on the card when customer selects the Annual plan. Display only — use Stripe fields for checkout.",
+        "name": "priceAnnual",
+        "type": "number",
+        "title": "Annual Price (Display)"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "One-time (charged once at checkout)",
+              "value": "one-time"
+            },
+            {
+              "title": "Recurring (follows the customer's plan — monthly or annual)",
+              "value": "recurring"
+            }
+          ],
+          "layout": "radio"
+        },
+        "initialValue": "recurring",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "one-time",
+                  "recurring"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Recurring add-ons use the Monthly Stripe Price ID when the customer picks a monthly plan, and the Annual Stripe Price ID when they pick annual.",
+        "name": "billingInterval",
+        "type": "string",
+        "title": "Billing Type"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "regex",
+                "constraint": {
+                  "pattern": "/^price_/",
+                  "name": "Stripe Price ID",
+                  "invert": false
+                }
+              }
+            ],
+            "level": "warning",
+            "message": "Should start with \"price_\""
+          }
+        ],
+        "description": "Used when customer is on the Monthly plan. Starts with price_.",
+        "name": "stripePriceIdMonthly",
+        "type": "string",
+        "title": "Stripe Price ID — Monthly"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "regex",
+                "constraint": {
+                  "pattern": "/^price_/",
+                  "name": "Stripe Price ID",
+                  "invert": false
+                }
+              }
+            ],
+            "level": "warning",
+            "message": "Should start with \"price_\""
+          }
+        ],
+        "description": "Used when customer is on the Annual plan. Starts with price_.",
+        "name": "stripePriceIdAnnual",
+        "type": "string",
+        "title": "Stripe Price ID — Annual"
+      },
+      {
+        "initialValue": false,
+        "description": "If checked, this add-on is shown on every product page.",
+        "name": "appliesToAllDevices",
+        "type": "boolean",
+        "title": "Applies to All Devices"
+      },
+      {
+        "description": "Select which devices this add-on applies to. Ignored if \"Applies to All Devices\" is checked.",
+        "of": [
+          {
+            "to": [
+              {
+                "type": "device"
+              }
+            ],
+            "type": "reference",
+            "title": "Reference to device"
+          }
+        ],
+        "hidden": "conditional",
+        "name": "applicableDevices",
+        "type": "array"
+      },
+      {
+        "initialValue": true,
+        "description": "Uncheck to hide this add-on without deleting it.",
+        "name": "isActive",
+        "type": "boolean",
+        "title": "Active"
+      },
+      {
+        "initialValue": 10,
+        "description": "Lower numbers appear first.",
+        "name": "sortOrder",
+        "type": "number"
+      }
+    ],
+    "name": "addon",
+    "type": "document",
+    "title": "Add-on"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "description": "Controls blog post chronological ordering",
+        "name": "publishedAt",
+        "type": "datetime"
+      },
+      {
+        "description": "Author name (plain text). Webflow used e.g. \"David Krawczyk\".",
+        "name": "author",
+        "type": "string"
+      },
+      {
+        "description": "Blog category tag, e.g. \"Technology & Devices\". Plain text in Webflow.",
+        "name": "category",
+        "type": "string"
+      },
+      {
+        "rows": 3,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "max",
+                "constraint": 160
+              }
+            ],
+            "level": "warning",
+            "message": "Keep under 160 characters for optimal SEO display"
+          }
+        ],
+        "description": "Used as blog list summary AND as the page meta description. Corresponds to Webflow \"Meta Description / Summary\" column.",
+        "name": "excerpt",
+        "type": "text",
+        "title": "Excerpt / Meta Description"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "description": "Thumbnail image used in blog listing pages and social sharing",
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Alt Text"
+          }
+        ],
+        "name": "mainImage",
+        "type": "image"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "description": "Full-width banner image displayed at top of blog detail page. Separate from mainImage.",
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Alt Text"
+          }
+        ],
+        "name": "heroImage",
+        "type": "image"
+      },
+      {
+        "description": "Portable Text body — converted from Webflow HTML via html-to-pte. Webflow column: \"Main text\".",
+        "of": [
+          {
+            "marks": {
+              "annotations": [
+                {
+                  "i18nTitleKey": "inputs.portable-text.annotation.link",
+                  "options": {
+                    "modal": {
+                      "type": "popover"
+                    }
+                  },
+                  "fields": [
+                    {
+                      "validation": [
+                        {
+                          "rules": [
+                            {
+                              "flag": "uri",
+                              "constraint": {
+                                "options": {
+                                  "scheme": [
+                                    "/^http$/",
+                                    "/^https$/",
+                                    "/^tel$/",
+                                    "/^mailto$/"
+                                  ],
+                                  "allowRelative": true,
+                                  "relativeOnly": false,
+                                  "allowCredentials": false
+                                }
+                              }
+                            }
+                          ],
+                          "level": "error"
+                        }
+                      ],
+                      "description": "A valid web, email, phone, or relative link.",
+                      "name": "href",
+                      "type": "url",
+                      "title": "Link"
+                    }
+                  ],
+                  "name": "link",
+                  "type": "object"
+                }
+              ],
+              "decorators": [
+                {
+                  "value": "strong",
+                  "title": "Strong"
+                },
+                {
+                  "value": "em",
+                  "title": "Italic"
+                },
+                {
+                  "value": "code",
+                  "title": "Code"
+                },
+                {
+                  "value": "underline",
+                  "title": "Underline"
+                },
+                {
+                  "value": "strike-through",
+                  "title": "Strike"
+                }
+              ]
+            },
+            "lists": [
+              {
+                "value": "bullet",
+                "title": "Bulleted list"
+              },
+              {
+                "value": "number",
+                "title": "Numbered list"
+              }
+            ],
+            "styles": [
+              {
+                "value": "normal",
+                "title": "Normal"
+              },
+              {
+                "value": "h1",
+                "title": "Heading 1"
+              },
+              {
+                "value": "h2",
+                "title": "Heading 2"
+              },
+              {
+                "value": "h3",
+                "title": "Heading 3"
+              },
+              {
+                "value": "h4",
+                "title": "Heading 4"
+              },
+              {
+                "value": "h5",
+                "title": "Heading 5"
+              },
+              {
+                "value": "h6",
+                "title": "Heading 6"
+              },
+              {
+                "value": "blockquote",
+                "title": "Quote"
+              }
+            ],
+            "of": [],
+            "type": "block"
+          },
+          {
+            "options": {
+              "hotspot": true
+            },
+            "fields": [
+              {
+                "name": "alt",
+                "type": "string",
+                "title": "Alt Text"
+              },
+              {
+                "name": "caption",
+                "type": "string"
+              }
+            ],
+            "type": "image"
+          },
+          {
+            "fields": [
+              {
+                "of": [
+                  {
+                    "fields": [
+                      {
+                        "of": [
+                          {
+                            "type": "string"
+                          }
+                        ],
+                        "name": "cells",
+                        "type": "array"
+                      }
+                    ],
+                    "type": "object",
+                    "name": "row"
+                  }
+                ],
+                "name": "rows",
+                "type": "array"
+              }
+            ],
+            "type": "object",
+            "name": "table"
+          }
+        ],
+        "name": "body",
+        "type": "array"
+      },
+      {
+        "initialValue": false,
+        "description": "Pin this post to featured placement on the blog index. Webflow column: \"Featured Blog\".",
+        "name": "isFeatured",
+        "type": "boolean",
+        "title": "Featured Post"
+      },
+      {
+        "description": "Optional. Overrides the post title in <title> meta tag. Leave blank to use post title.",
+        "name": "seoTitle",
+        "type": "string",
+        "title": "SEO Title Override"
+      },
+      {
+        "description": "Webflow CMS Item ID — used during Phase 3 import to prevent duplicates. Remove post-migration.",
+        "hidden": true,
+        "name": "webflowId",
+        "type": "string",
+        "title": "Webflow Item ID"
+      }
+    ],
+    "name": "blogPost",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "question",
+        "type": "string"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "answer",
+        "type": "text"
+      },
+      {
+        "description": "Which pages should display this FAQ. One document can appear on multiple pages.",
+        "of": [
+          {
+            "options": {
+              "list": [
+                {
+                  "title": "Homepage",
+                  "value": "homepage"
+                },
+                {
+                  "title": "Holo Pro",
+                  "value": "holo-pro"
+                },
+                {
+                  "title": "Holo Mini",
+                  "value": "holo-mini"
+                },
+                {
+                  "title": "Holo Active",
+                  "value": "holo-active"
+                },
+                {
+                  "title": "Checkout",
+                  "value": "checkout"
+                },
+                {
+                  "title": "Savings Program",
+                  "value": "savings-program"
+                },
+                {
+                  "title": "Referral Program",
+                  "value": "referral-program"
+                },
+                {
+                  "title": "General",
+                  "value": "general"
+                }
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "name": "pages",
+        "type": "array"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Device-Specific",
+              "value": "device-specific"
+            },
+            {
+              "title": "Billing",
+              "value": "billing"
+            },
+            {
+              "title": "Monitoring",
+              "value": "monitoring"
+            },
+            {
+              "title": "Shipping",
+              "value": "shipping"
+            },
+            {
+              "title": "General",
+              "value": "general"
+            }
+          ]
+        },
+        "name": "category",
+        "type": "string"
+      },
+      {
+        "initialValue": 99,
+        "description": "Lower numbers appear first within a page context",
+        "name": "sortOrder",
+        "type": "number"
+      }
+    ],
+    "name": "faq",
+    "type": "document",
+    "title": "FAQ"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Customer Name"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "body",
+        "type": "text",
+        "title": "Review"
+      },
+      {
+        "description": "Optional. e.g. \"Daughter of Holo Alert user\". Not in Webflow export — add editorially.",
+        "name": "role",
+        "type": "string",
+        "title": "Role / Relationship"
+      },
+      {
+        "description": "Customer location, e.g. \"Saskatchewan, Canada\". From Webflow export.",
+        "name": "location",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 5
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "1 to 5 stars",
+        "name": "rating",
+        "type": "number"
+      },
+      {
+        "name": "date",
+        "type": "date",
+        "title": "Review Date"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Holo Pro",
+              "value": "holo-pro"
+            },
+            {
+              "title": "Holo Mini",
+              "value": "holo-mini"
+            },
+            {
+              "title": "Holo Active",
+              "value": "holo-active"
+            }
+          ]
+        },
+        "description": "Device slug this review is for, e.g. \"holo-pro\", \"holo-mini\", \"holo-active\". Stored as string to avoid broken refs during import.",
+        "name": "productSlug",
+        "type": "string",
+        "title": "Product"
+      },
+      {
+        "initialValue": false,
+        "description": "Only approved testimonials are displayed on the site. Default true for migrated data, false for new submissions.",
+        "name": "isApproved",
+        "type": "boolean",
+        "title": "Approved"
+      },
+      {
+        "description": "Webflow CMS Item ID — used during Phase 3 import to prevent duplicates. Remove post-migration.",
+        "hidden": true,
+        "name": "webflowId",
+        "type": "string",
+        "title": "Webflow Item ID"
+      }
+    ],
+    "name": "testimonial",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Internal title for editors — e.g. \"Spring 2026 Sale Banner\"",
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "rows": 3,
+        "description": "The promotional message displayed to visitors",
+        "name": "body",
+        "type": "text",
+        "title": "Promotional Copy"
+      },
+      {
+        "initialValue": false,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Master switch. Set false to immediately hide without deleting. Date range is also checked.",
+        "name": "isActive",
+        "type": "boolean",
+        "title": "Active"
+      },
+      {
+        "description": "Promotion starts displaying at this time (UTC). Leave blank for no start restriction.",
+        "name": "startDate",
+        "type": "datetime"
+      },
+      {
+        "description": "Promotion stops displaying after this time (UTC). Leave blank for no end restriction.",
+        "name": "endDate",
+        "type": "datetime"
+      },
+      {
+        "description": "e.g. \"Shop Now\", \"Claim Offer\"",
+        "name": "ctaText",
+        "type": "string",
+        "title": "CTA Button Label"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Where the CTA button links to",
+        "name": "ctaUrl",
+        "type": "url",
+        "title": "CTA Destination URL"
+      },
+      {
+        "description": "Which pages show this promotion. Empty = no pages (but keep isActive false too).",
+        "of": [
+          {
+            "options": {
+              "list": [
+                {
+                  "title": "Homepage",
+                  "value": "homepage"
+                },
+                {
+                  "title": "Holo Pro",
+                  "value": "holo-pro"
+                },
+                {
+                  "title": "Holo Mini",
+                  "value": "holo-mini"
+                },
+                {
+                  "title": "Holo Active",
+                  "value": "holo-active"
+                },
+                {
+                  "title": "Checkout",
+                  "value": "checkout"
+                },
+                {
+                  "title": "Savings Program",
+                  "value": "savings-program"
+                },
+                {
+                  "title": "Referral Program",
+                  "value": "referral-program"
+                },
+                {
+                  "title": "General",
+                  "value": "general"
+                }
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "name": "targetPages",
+        "type": "array"
+      }
+    ],
+    "name": "promo",
+    "type": "document",
+    "title": "Promotion"
+  },
+  {
+    "fields": [
+      {
+        "description": "Used in <title> tags and Open Graph. e.g. \"Holo Alert\"",
+        "name": "siteTitle",
+        "type": "string"
+      },
+      {
+        "rows": 2,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "max",
+                "constraint": 160
+              }
+            ],
+            "level": "warning",
+            "message": "Keep under 160 characters for SEO"
+          }
+        ],
+        "description": "Default meta description for pages without a specific description",
+        "name": "siteDescription",
+        "type": "text"
+      },
+      {
+        "description": "Click-to-call formatted, e.g. \"1-800-xxx-xxxx\". Used in header, footer, and tel: links.",
+        "name": "phoneNumber",
+        "type": "string"
+      },
+      {
+        "name": "email",
+        "type": "string",
+        "title": "Contact Email"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Alt Text"
+          }
+        ],
+        "name": "logo",
+        "type": "image"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "options": {
+                  "list": [
+                    {
+                      "title": "Facebook",
+                      "value": "facebook"
+                    },
+                    {
+                      "title": "Instagram",
+                      "value": "instagram"
+                    },
+                    {
+                      "title": "Twitter / X",
+                      "value": "twitter"
+                    },
+                    {
+                      "title": "LinkedIn",
+                      "value": "linkedin"
+                    },
+                    {
+                      "title": "YouTube",
+                      "value": "youtube"
+                    },
+                    {
+                      "title": "TikTok",
+                      "value": "tiktok"
+                    }
+                  ]
+                },
+                "name": "platform",
+                "type": "string"
+              },
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "uri",
+                        "constraint": {
+                          "options": {
+                            "scheme": [
+                              "/^http$/",
+                              "/^https$/"
+                            ],
+                            "allowRelative": false,
+                            "relativeOnly": false,
+                            "allowCredentials": false
+                          }
+                        }
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "url",
+                "type": "url",
+                "title": "URL"
+              }
+            ],
+            "type": "object",
+            "name": "socialLink"
+          }
+        ],
+        "name": "socialLinks",
+        "type": "array"
+      },
+      {
+        "rows": 3,
+        "description": "Full mailing address for structured data / schema.org LocalBusiness. Include province and postal code.",
+        "name": "address",
+        "type": "text"
+      }
+    ],
+    "name": "siteSettings",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Terms & Conditions",
+              "value": "terms"
+            },
+            {
+              "title": "Privacy Policy",
+              "value": "privacy"
+            }
+          ],
+          "layout": "radio"
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "terms",
+                  "privacy"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "pageType",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Page Title"
+      },
+      {
+        "name": "effectiveDate",
+        "type": "date"
+      },
+      {
+        "name": "lastUpdatedDate",
+        "type": "date"
+      },
+      {
+        "description": "Use \"Section Title (H2)\" for numbered section headers, \"Sub-heading (H3)\" for sub-sections, Normal for body text, Bullet for lists, and \"Legal Disclaimer\" for uppercase liability/warranty clauses.",
+        "of": [
+          {
+            "marks": {
+              "annotations": [
+                {
+                  "fields": [
+                    {
+                      "validation": [
+                        {
+                          "rules": [
+                            {
+                              "flag": "presence",
+                              "constraint": "required"
+                            }
+                          ],
+                          "level": "error"
+                        }
+                      ],
+                      "name": "href",
+                      "type": "string",
+                      "title": "URL"
+                    }
+                  ],
+                  "name": "link",
+                  "type": "object"
+                }
+              ],
+              "decorators": [
+                {
+                  "value": "strong",
+                  "title": "Strong"
+                },
+                {
+                  "value": "em",
+                  "title": "Emphasis"
+                }
+              ]
+            },
+            "lists": [
+              {
+                "value": "bullet",
+                "title": "Bullet"
+              }
+            ],
+            "styles": [
+              {
+                "value": "normal",
+                "title": "Normal"
+              },
+              {
+                "value": "h2",
+                "title": "Section Title (H2)"
+              },
+              {
+                "value": "h3",
+                "title": "Sub-heading (H3)"
+              },
+              {
+                "value": "legalNote",
+                "title": "Legal Disclaimer (uppercase)"
+              }
+            ],
+            "of": [],
+            "type": "block"
+          }
+        ],
+        "name": "content",
+        "type": "array",
+        "title": "Page Content"
+      }
+    ],
+    "name": "legalPage",
+    "type": "document"
+  }
+]

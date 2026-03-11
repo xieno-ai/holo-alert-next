@@ -48,9 +48,30 @@ interface Device {
   fallAlertDisclaimer?: string
 }
 
+interface VariantData {
+  _id: string
+  name?: string
+  slug?: { current: string }
+  tagline?: string
+  description?: PortableTextBlock[]
+  mainImage?: object
+  gallery?: object[]
+  specs?: Spec[]
+  monthlyPriceDisplay?: string
+  annualPriceDisplay?: string
+  devicePrice?: number
+  reducedDevicePrice?: number
+  pricingCardBenefits?: string[]
+  fallAlertDisclaimer?: string
+  stripePriceIdMonthly?: string
+  stripePriceIdYearly?: string
+  stripePriceIdDevice?: string
+}
+
 interface Props {
   device: Device
   addons?: Addon[]
+  variants?: VariantData[]
 }
 
 const StarIcon = () => (
@@ -78,16 +99,48 @@ const FALLBACK_PRICING = {
   reducedDevicePrice: 299.95,
 }
 
-export default function ProductHeroSection({ device, addons = [] }: Props) {
+export default function ProductHeroSection({ device, addons = [], variants = [] }: Props) {
+  // Build combined list: current device first, then variants
+  const allVariants: VariantData[] = [
+    {
+      _id: device._id,
+      name: device.name,
+      slug: device.slug,
+      tagline: device.tagline,
+      description: device.description,
+      mainImage: device.mainImage,
+      gallery: device.gallery,
+      specs: device.specs,
+      monthlyPriceDisplay: device.monthlyPriceDisplay,
+      annualPriceDisplay: device.annualPriceDisplay,
+      devicePrice: device.devicePrice,
+      reducedDevicePrice: device.reducedDevicePrice,
+      pricingCardBenefits: device.pricingCardBenefits,
+      fallAlertDisclaimer: device.fallAlertDisclaimer,
+    },
+    ...(variants ?? []),
+  ]
+  const hasVariants = allVariants.length > 1
+
+  const [selectedVariantIdx, setSelectedVariantIdx] = useState(0)
+  const activeVariant = allVariants[selectedVariantIdx] ?? allVariants[0]
+
+  // Build images from active variant
   const allImages: object[] = []
-  if (device.mainImage) allImages.push(device.mainImage)
-  if (device.gallery) allImages.push(...device.gallery)
+  if (activeVariant.mainImage) allImages.push(activeVariant.mainImage)
+  if (activeVariant.gallery) allImages.push(...activeVariant.gallery)
 
   const [activeIdx, setActiveIdx] = useState(0)
   const [deliveryOpen, setDeliveryOpen] = useState(false)
   const [specsOpen, setSpecsOpen] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<'annual' | 'monthly' | null>(null)
   const [selectedAddons, setSelectedAddons] = useState<Set<string>>(new Set())
+
+  // Reset image index when variant changes
+  function selectVariant(idx: number) {
+    setSelectedVariantIdx(idx)
+    setActiveIdx(0)
+  }
 
   function toggleAddon(id: string) {
     setSelectedAddons((prev) => {
@@ -119,28 +172,28 @@ export default function ProductHeroSection({ device, addons = [] }: Props) {
     ? urlFor(activeImage).width(700).height(700).url()
     : null
 
-  const monthlyRaw = device.monthlyPriceDisplay ?? FALLBACK_PRICING.monthly
+  const monthlyRaw = activeVariant.monthlyPriceDisplay ?? FALLBACK_PRICING.monthly
   const monthly = (() => {
     let s = monthlyRaw
     if (!s.includes('$')) s = s.replace(/(\d)/, '$$$1')
     if (!/\/mo(nth)?/i.test(s)) s = s.trim() + '/mo'
     return s
   })()
-  const annualRaw = device.annualPriceDisplay ?? FALLBACK_PRICING.annual
+  const annualRaw = activeVariant.annualPriceDisplay ?? FALLBACK_PRICING.annual
   const annual = (() => {
     const s = annualRaw.replace(/^\$/, '').replace(/\/(yr|year|mo(nth)?)/i, '').trim()
     return `$${s}/yr`
   })()
-  const productName = device.name ?? 'Holo Pro'
+  const productName = activeVariant.name ?? 'Holo Pro'
 
   // Device pricing + current promo logic
-  const baseDevicePrice = device.devicePrice ?? FALLBACK_PRICING.devicePrice
+  const baseDevicePrice = activeVariant.devicePrice ?? FALLBACK_PRICING.devicePrice
   const monthlyDevicePrice = Math.round(baseDevicePrice * 0.6 * 100) / 100 // 40% off
   const fmtPrice = (n: number) => `$${n.toFixed(2)}`
-  const hasDescription = device.description && device.description.length > 0
+  const hasDescription = activeVariant.description && activeVariant.description.length > 0
   const fallbackTagline = 'Canada\'s most advanced medical alert device with real-time GPS, 24/7 monitoring, and fall detection built for active seniors.'
 
-  const slug = device.slug?.current ?? 'holo-pro'
+  const slug = activeVariant.slug?.current ?? 'holo-pro'
 
   return (
     <section style={{ background: '#fff', padding: '120px 40px 40px' }}>
@@ -235,6 +288,71 @@ export default function ProductHeroSection({ device, addons = [] }: Props) {
             Medical Alert Device
           </span>
 
+          {/* Variant selector */}
+          {hasVariants && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div
+                data-variant-selector
+                style={{
+                  display: 'inline-flex',
+                  borderRadius: '10px',
+                  border: '1.5px solid #e0e0e0',
+                  padding: '3px',
+                  background: '#fafafa',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+              >
+                {/* One-time shimmer sweep */}
+                <div
+                  data-variant-shimmer
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'linear-gradient(100deg, transparent 20%, rgba(66,148,216,0.12) 45%, rgba(66,148,216,0.2) 50%, rgba(66,148,216,0.12) 55%, transparent 80%)',
+                    borderRadius: 'inherit',
+                    pointerEvents: 'none',
+                    zIndex: 1,
+                  }}
+                />
+                {allVariants.map((v, i) => {
+                  const isActive = i === selectedVariantIdx
+                  return (
+                    <button
+                      key={v._id}
+                      type="button"
+                      onClick={() => selectVariant(i)}
+                      style={{
+                        padding: '7px 18px',
+                        borderRadius: '7px',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontSize: '12.5px',
+                        fontWeight: isActive ? 700 : 500,
+                        letterSpacing: '0.02em',
+                        color: isActive ? '#fff' : '#555',
+                        background: isActive ? '#4294d8' : 'transparent',
+                        transition: 'background 0.15s ease, color 0.15s ease',
+                        position: 'relative',
+                        zIndex: 2,
+                      }}
+                    >
+                      {v.name ?? 'Variant'}
+                    </button>
+                  )
+                })}
+              </div>
+              {/* Hint label — fades out */}
+              <span data-variant-hint style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11.5px', color: '#4294d8', fontWeight: 500, whiteSpace: 'nowrap' }}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style={{ flexShrink: 0, marginTop: '0.5px' }}>
+                  <path d="M8 3.5L4.5 7L8 10.5" stroke="#4294d8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M5 7H12" stroke="#4294d8" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+                {allVariants.length} sizes available
+              </span>
+            </div>
+          )}
+
           {/* Name */}
           <h1 style={{ fontSize: 'clamp(36px, 4vw, 56px)', fontWeight: 800, color: '#171717', letterSpacing: '0.1em', textTransform: 'uppercase' as const, margin: '0 0 16px', lineHeight: 1.05 }}>
             {productName}
@@ -252,7 +370,7 @@ export default function ProductHeroSection({ device, addons = [] }: Props) {
           <div style={{ fontSize: '16px', color: '#555', lineHeight: 1.65, margin: '0 0 28px' }}>
             {hasDescription ? (
               <PortableText
-                value={device.description!}
+                value={activeVariant.description!}
                 components={{
                   block: {
                     normal: ({ children }) => <p style={{ margin: '0 0 12px' }}>{children}</p>,
@@ -511,8 +629,28 @@ export default function ProductHeroSection({ device, addons = [] }: Props) {
               from { opacity: 0; transform: translateY(-6px); }
               to   { opacity: 1; transform: translateY(0); }
             }
+            @keyframes variantShimmer {
+              0%   { transform: translateX(-120%); opacity: 1; }
+              60%  { transform: translateX(120%); opacity: 1; }
+              61%  { opacity: 0; }
+              100% { opacity: 0; transform: translateX(120%); }
+            }
+            @keyframes variantHintFade {
+              0%   { opacity: 0; transform: translateX(-4px); }
+              15%  { opacity: 1; transform: translateX(0); }
+              75%  { opacity: 1; transform: translateX(0); }
+              100% { opacity: 0; transform: translateX(0); }
+            }
+            [data-variant-shimmer] {
+              animation: variantShimmer 1.8s ease 0.5s forwards;
+            }
+            [data-variant-hint] {
+              animation: variantHintFade 4s ease 0.8s both;
+            }
             @media (prefers-reduced-motion: reduce) {
-              [data-addons-panel] { animation: none !important; }
+              [data-addons-panel],
+              [data-variant-shimmer],
+              [data-variant-hint] { animation: none !important; }
             }
           `}</style>
 
@@ -569,10 +707,10 @@ export default function ProductHeroSection({ device, addons = [] }: Props) {
               <div style={{ overflow: 'hidden', maxHeight: specsOpen ? '600px' : '0', transition: 'max-height 0.35s ease' }}>
                 <div style={{ paddingBottom: '20px' }}>
                   {/* Sanity specs */}
-                  {device.specs && device.specs.length > 0 && (
-                    <div style={{ marginBottom: device.pricingCardBenefits?.length ? '16px' : '0' }}>
-                      {device.specs.map((spec, i) => (
-                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < device.specs!.length - 1 ? '1px solid #f0f0f0' : 'none' }}>
+                  {activeVariant.specs && activeVariant.specs.length > 0 && (
+                    <div style={{ marginBottom: activeVariant.pricingCardBenefits?.length ? '16px' : '0' }}>
+                      {activeVariant.specs.map((spec, i) => (
+                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < activeVariant.specs!.length - 1 ? '1px solid #f0f0f0' : 'none' }}>
                           <span style={{ fontSize: '13.5px', color: '#444', fontWeight: 500 }}>{spec.label}</span>
                           <span style={{ fontSize: '13.5px', color: '#787878' }}>{spec.value}</span>
                         </div>
@@ -580,9 +718,9 @@ export default function ProductHeroSection({ device, addons = [] }: Props) {
                     </div>
                   )}
                   {/* pricingCardBenefits */}
-                  {device.pricingCardBenefits && device.pricingCardBenefits.length > 0 && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingTop: device.specs?.length ? '12px' : '0' }}>
-                      {device.pricingCardBenefits.map((benefit) => (
+                  {activeVariant.pricingCardBenefits && activeVariant.pricingCardBenefits.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingTop: activeVariant.specs?.length ? '12px' : '0' }}>
+                      {activeVariant.pricingCardBenefits.map((benefit) => (
                         <div key={benefit} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13.5px', color: '#444' }}>
                           <CheckIcon />
                           {benefit}
@@ -591,9 +729,9 @@ export default function ProductHeroSection({ device, addons = [] }: Props) {
                     </div>
                   )}
                   {/* Fall alert disclaimer */}
-                  {device.fallAlertDisclaimer && (
+                  {activeVariant.fallAlertDisclaimer && (
                     <p style={{ fontSize: '11.5px', color: '#aaa', lineHeight: 1.5, margin: '16px 0 0' }}>
-                      {device.fallAlertDisclaimer}
+                      {activeVariant.fallAlertDisclaimer}
                     </p>
                   )}
                 </div>

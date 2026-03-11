@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-const certs = [
+const fallbackCerts = [
   {
     src: '/images/Frame-292.avif',
     alt: 'TMA Five Diamond Monitoring Center',
@@ -24,7 +24,27 @@ const certs = [
   },
 ]
 
-export default function CertificationsSection() {
+interface SanityCert {
+  name: string
+  description: string
+  imageUrl: string | null
+  scaleUp: boolean
+}
+
+interface Props {
+  certifications?: SanityCert[] | null
+}
+
+export default function CertificationsSection({ certifications }: Props) {
+  const certs = certifications
+    ? certifications.map((c, i) => ({
+        src: c.imageUrl ?? fallbackCerts[i]?.src ?? '',
+        alt: c.name,
+        name: c.name,
+        desc: c.description,
+        scale: c.scaleUp,
+      }))
+    : fallbackCerts
   return (
     <section style={{ background: '#fff', padding: '80px 40px' }}>
       <div style={{ textAlign: 'center', marginBottom: '56px' }}>

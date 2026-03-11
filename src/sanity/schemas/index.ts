@@ -6,5 +6,7 @@ import { testimonial } from './testimonial'
 import { promo } from './promo'
 import { siteSettings } from './siteSettings'
 import { legalPage } from './legalPage'
+import { homePage } from './homePage'
+import { emergencyContactSubmission } from './emergencyContactSubmission'
 
-export const schemaTypes = [device, addon, blogPost, faq, testimonial, promo, siteSettings, legalPage]
+export const schemaTypes = [device, addon, blogPost, faq, testimonial, promo, siteSettings, legalPage, homePage, emergencyContactSubmission]

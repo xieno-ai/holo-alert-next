@@ -96,6 +96,25 @@ export default async function DevicePage({ params }: Params) {
       hasCaregiverApp?: boolean
       caregiverAppBackgroundImage?: { asset?: { url?: string }; alt?: string }
       caregiverAppForegroundImage?: { asset?: { url?: string }; alt?: string }
+      variants?: Array<{
+        _id: string
+        name?: string
+        slug?: { current: string }
+        tagline?: string
+        description?: Array<{ _type: string; _key?: string; [key: string]: unknown }>
+        mainImage?: object
+        gallery?: object[]
+        specs?: Array<{ label: string; value: string }>
+        monthlyPriceDisplay?: string
+        annualPriceDisplay?: string
+        devicePrice?: number
+        reducedDevicePrice?: number
+        pricingCardBenefits?: string[]
+        fallAlertDisclaimer?: string
+        stripePriceIdMonthly?: string
+        stripePriceIdYearly?: string
+        stripePriceIdDevice?: string
+      }>
     }>({
       query: DEVICE_QUERY,
       params: { slug },
@@ -123,7 +142,7 @@ export default async function DevicePage({ params }: Params) {
 
   return (
     <>
-      <ProductHeroSection device={device} addons={addons} />
+      <ProductHeroSection device={device} addons={addons} variants={device.variants} />
       <ProductFeaturesSection
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         features={device.features as any}

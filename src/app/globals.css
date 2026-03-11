@@ -25,6 +25,18 @@
   /* White shorthand */
   --color-brand-white: #ffffff;
 
+  /* Aurora animation */
+  --animate-aurora: aurora 60s linear infinite;
+
+  @keyframes aurora {
+    from {
+      background-position: 50% 50%, 50% 50%;
+    }
+    to {
+      background-position: 350% 50%, 350% 50%;
+    }
+  }
+
   /* Layout constraints */
   --max-w-container: 1200px;
 
@@ -35,6 +47,16 @@
 /* shadcn/ui semantic variables — OKLCH format (Tailwind v4 pattern) */
 @layer base {
   :root {
+    /* Aurora color variables — mapped to brand palette */
+    --white: #ffffff;
+    --black: #171717;
+    --transparent: transparent;
+    --blue-500: #4294d8;
+    --blue-400: #5ba3de;
+    --blue-300: #7ab6e6;
+    --indigo-300: #7a9de6;
+    --violet-200: #b8c4e8;
+
     --radius: 0.5rem;
     --background: oklch(1 0 0);
     --foreground: oklch(0.10 0 0);
