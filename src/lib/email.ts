@@ -1,6 +1,8 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResendClient() {
+  return new Resend(process.env.RESEND_API_KEY)
+}
 
 export interface OrderEmailData {
   customerName: string
@@ -200,7 +202,7 @@ function buildEmailHtml(data: OrderEmailData): string {
 export async function sendOrderConfirmationEmail(data: OrderEmailData) {
   const html = buildEmailHtml(data)
 
-  const { error } = await resend.emails.send({
+  const { error } = await getResendClient().emails.send({
     from: 'Holo Alert <orders@orders.holoalert.ca>',
     to: data.customerEmail,
     subject: `Order Confirmed — ${data.deviceName}`,
