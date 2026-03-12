@@ -99,18 +99,34 @@ export default async function HomePage() {
         slot3Url={heroSlot3Url}
       />
       <TrustBar logos={trustBarLogos} />
-      <HowItWorksSection steps={howItWorksSteps} />
-      <FeatureDiagramSection
-        featuredImageUrl={featuredImageUrl}
-        featuredDeviceName={featuredDeviceName}
-        watermarkUrl={watermarkUrl}
-      />
-      <DeviceCardsSection />
-      <BridgeSection />
-      <WhyChooseSection imageUrl={whyChooseImageUrl} />
-      <CertificationsSection certifications={certifications} />
-      <TestimonialsSection />
-      <FAQSection />
+      <div className="content-visibility-auto">
+        <HowItWorksSection steps={howItWorksSteps} />
+      </div>
+      <div className="content-visibility-auto">
+        <FeatureDiagramSection
+          featuredImageUrl={featuredImageUrl}
+          featuredDeviceName={featuredDeviceName}
+          watermarkUrl={watermarkUrl}
+        />
+      </div>
+      <div className="content-visibility-auto">
+        <DeviceCardsSection />
+      </div>
+      <div className="content-visibility-auto">
+        <BridgeSection />
+      </div>
+      <div className="content-visibility-auto">
+        <WhyChooseSection imageUrl={whyChooseImageUrl} />
+      </div>
+      <div className="content-visibility-auto">
+        <CertificationsSection certifications={certifications} />
+      </div>
+      <div className="content-visibility-auto">
+        <TestimonialsSection />
+      </div>
+      <div className="content-visibility-auto">
+        <FAQSection />
+      </div>
     </>
   )
 }

@@ -285,7 +285,7 @@ export default function SuccessContent({ firstName, email, deviceName, plan, ite
               <h2 className="text-xl font-semibold text-brand-black tracking-tight">What to Expect</h2>
             </div>
 
-            <div className="relative pl-2">
+            <div className="relative" style={{ marginLeft: '-4px' }}>
               {TIMELINE_STEPS.map((step, i) => (
                 <div
                   key={i}
@@ -367,7 +367,7 @@ export default function SuccessContent({ firstName, email, deviceName, plan, ite
 
               <a
                 href="/emergency-contacts"
-                className="inline-flex items-center justify-center gap-2 font-semibold text-white text-[14px] rounded-lg"
+                className="inline-flex items-center justify-center gap-2 font-semibold text-white text-[14px] rounded-lg focus-visible:ring-2 focus-visible:ring-[#4294d8]/50 focus-visible:ring-offset-2 focus-visible:outline-none"
                 style={{
                   background: '#4294d8',
                   padding: '14px 36px',

@@ -1,32 +1,19 @@
 'use client'
 
-import { useState } from 'react'
-import { loadStripe } from '@stripe/stripe-js'
-import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
+import { useState, forwardRef, useCallback } from 'react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import { useGooglePlacesAutocomplete } from '@/hooks/useGooglePlacesAutocomplete'
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
-
-const STRIPE_APPEARANCE = {
-  theme: 'stripe' as const,
-  variables: {
-    colorPrimary: '#4294d8',
-    colorBackground: '#ffffff',
-    colorText: '#171717',
-    colorTextSecondary: '#787878',
-    colorDanger: '#e53e3e',
-    fontFamily: '"Instrument Sans", sans-serif',
-    borderRadius: '8px',
-    fontSizeBase: '14px',
-  },
-  rules: {
-    '.Input': { border: '1.5px solid #d0d5dd', boxShadow: 'none', padding: '11px 14px' },
-    '.Input:focus': { border: '1.5px solid #4294d8', boxShadow: '0 0 0 3px rgba(66,148,216,0.1)' },
-    '.Label': { fontWeight: '600', color: '#344054' },
-    '.Tab': { border: '1.5px solid #d0d5dd', borderRadius: '8px' },
-    '.Tab--selected': { border: '1.5px solid #4294d8', boxShadow: '0 0 0 1px #4294d8' },
-  },
-}
+// Lazy-load Stripe — only needed when user reaches the payment step
+const StripePaymentStep = dynamic(() => import('./StripePaymentStep'), {
+  ssr: false,
+  loading: () => (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '200px', gap: '12px', color: '#aaa', fontSize: '14px' }}>
+      Loading payment form…
+    </div>
+  ),
+})
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -80,7 +67,7 @@ const INITIAL_FORM: FormState = {
 const INPUT: React.CSSProperties = {
   width: '100%', borderWidth: '1.5px', borderStyle: 'solid', borderColor: '#d0d5dd',
   borderRadius: '8px', padding: '11px 14px', fontSize: '14px', color: '#101828',
-  fontFamily: 'inherit', outline: 'none', background: '#fff', boxSizing: 'border-box',
+  fontFamily: 'inherit', background: '#fff', boxSizing: 'border-box',
 }
 const INPUT_ERR: React.CSSProperties = { ...INPUT, borderColor: '#e53e3e' }
 const LABEL: React.CSSProperties = { display: 'block', fontSize: '13px', fontWeight: 600, color: '#344054', marginBottom: '6px' }
@@ -91,12 +78,12 @@ const SECTION_HEAD: React.CSSProperties = {
 
 // ─── Field helpers ────────────────────────────────────────────────────────────
 
-function Field({ label, error, required, hint, children }: {
-  label: string; error?: string; required?: boolean; hint?: string; children: React.ReactNode
+function Field({ label, error, required, hint, htmlFor, children }: {
+  label: string; error?: string; required?: boolean; hint?: string; htmlFor?: string; children: React.ReactNode
 }) {
   return (
     <div>
-      <label style={LABEL}>{label}{required && <span style={{ color: '#e53e3e', marginLeft: '3px' }}>*</span>}</label>
+      <label htmlFor={htmlFor} style={LABEL}>{label}{required && <span style={{ color: '#e53e3e', marginLeft: '3px' }}>*</span>}</label>
       {children}
       {hint && !error && <p style={{ fontSize: '11.5px', color: '#787878', marginTop: '4px' }}>{hint}</p>}
       {error && <p style={{ fontSize: '11.5px', color: '#e53e3e', marginTop: '4px' }}>{error}</p>}
@@ -104,23 +91,27 @@ function Field({ label, error, required, hint, children }: {
   )
 }
 
-function FInput({ value, onChange, error, ...rest }: React.InputHTMLAttributes<HTMLInputElement> & { error?: string }) {
-  const [focused, setFocused] = useState(false)
-  return (
-    <input {...rest} value={value} onChange={onChange}
-      onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-      style={{ ...(error ? INPUT_ERR : INPUT), ...(focused && !error ? { borderColor: '#4294d8', boxShadow: '0 0 0 3px rgba(66,148,216,0.1)' } : {}) }}
-    />
-  )
-}
+const FInput = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement> & { error?: string }>(
+  function FInput({ value, onChange, error, ...rest }, ref) {
+    const [focused, setFocused] = useState(false)
+    return (
+      <input {...rest} ref={ref} value={value} onChange={onChange}
+        onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+        style={{ ...(error ? INPUT_ERR : INPUT), ...(focused && !error ? { borderColor: '#4294d8', boxShadow: '0 0 0 3px rgba(66,148,216,0.1)' } : {}), outline: 'revert' }}
+        className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/40 focus-visible:outline-none"
+      />
+    )
+  }
+)
 
-function FSelect({ value, onChange, children }: { value: string; onChange: (v: string) => void; children: React.ReactNode }) {
+function FSelect({ value, onChange, name, id, children }: { value: string; onChange: (v: string) => void; name?: string; id?: string; children: React.ReactNode }) {
   const [focused, setFocused] = useState(false)
   return (
     <div style={{ position: 'relative' }}>
-      <select value={value} onChange={(e) => onChange(e.target.value)}
+      <select value={value} onChange={(e) => onChange(e.target.value)} name={name} id={id}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-        style={{ ...INPUT, appearance: 'none', paddingRight: '36px', cursor: 'pointer', ...(focused ? { borderColor: '#4294d8', boxShadow: '0 0 0 3px rgba(66,148,216,0.1)' } : {}) }}>
+        className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/40 focus-visible:outline-none"
+        style={{ ...INPUT, appearance: 'none', paddingRight: '36px', cursor: 'pointer', outline: 'revert', ...(focused ? { borderColor: '#4294d8', boxShadow: '0 0 0 3px rgba(66,148,216,0.1)' } : {}) }}>
         {children}
       </select>
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
@@ -131,33 +122,34 @@ function FSelect({ value, onChange, children }: { value: string; onChange: (v: s
   )
 }
 
-function AddressBlock({ prefix, form, errors, update }: {
+function AddressBlock({ prefix, form, errors, update, line1Ref }: {
   prefix: 'shipping' | 'emergency'; form: FormState
   errors: Partial<Record<keyof FormState, string>>; update: (f: keyof FormState, v: string | boolean) => void
+  line1Ref?: (node: HTMLInputElement | null) => void
 }) {
   const k = (n: string) => `${prefix}${n.charAt(0).toUpperCase() + n.slice(1)}` as keyof FormState
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-      <Field label="Address line 1" required error={errors[k('line1')] as string}>
-        <FInput placeholder="123 Main Street" value={form[k('line1')] as string}
-          onChange={(e) => update(k('line1'), e.target.value)} error={errors[k('line1')] as string} />
+      <Field label="Address line 1" required error={errors[k('line1')] as string} htmlFor={k('line1')}>
+        <FInput id={k('line1')} name={k('line1')} autoComplete="off" placeholder="Start typing an address…" value={form[k('line1')] as string}
+          ref={line1Ref} onChange={(e) => update(k('line1'), e.target.value)} error={errors[k('line1')] as string} />
       </Field>
-      <Field label="Address line 2">
-        <FInput placeholder="Apt, suite, unit (optional)" value={form[k('line2')] as string}
+      <Field label="Address line 2" htmlFor={k('line2')}>
+        <FInput id={k('line2')} name={k('line2')} autoComplete={prefix === 'shipping' ? 'address-line2' : 'off'} placeholder="Apt, suite, unit (optional)…" value={form[k('line2')] as string}
           onChange={(e) => update(k('line2'), e.target.value)} />
       </Field>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-        <Field label="City" required error={errors[k('city')] as string}>
-          <FInput placeholder="Toronto" value={form[k('city')] as string}
+        <Field label="City" required error={errors[k('city')] as string} htmlFor={k('city')}>
+          <FInput id={k('city')} name={k('city')} autoComplete={prefix === 'shipping' ? 'address-level2' : 'off'} placeholder="Toronto…" value={form[k('city')] as string}
             onChange={(e) => update(k('city'), e.target.value)} error={errors[k('city')] as string} />
         </Field>
-        <Field label="Postal code" required error={errors[k('postal')] as string}>
-          <FInput placeholder="M5V 1A1" value={form[k('postal')] as string}
+        <Field label="Postal code" required error={errors[k('postal')] as string} htmlFor={k('postal')}>
+          <FInput id={k('postal')} name={k('postal')} autoComplete={prefix === 'shipping' ? 'postal-code' : 'off'} placeholder="M5V 1A1…" value={form[k('postal')] as string}
             onChange={(e) => update(k('postal'), e.target.value)} error={errors[k('postal')] as string} />
         </Field>
       </div>
-      <Field label="Province">
-        <FSelect value={form[k('province')] as string} onChange={(v) => update(k('province'), v)}>
+      <Field label="Province" htmlFor={k('province')}>
+        <FSelect value={form[k('province')] as string} onChange={(v) => update(k('province'), v)} name={k('province')} id={k('province')}>
           {CA_PROVINCES.map((p) => <option key={p.code} value={p.code}>{p.name}</option>)}
         </FSelect>
       </Field>
@@ -198,6 +190,7 @@ function StepIndicator({ step }: { step: 1 | 2 | 3 }) {
 function ContinueButton({ onClick, label, loading }: { onClick: () => void; label: string; loading?: boolean }) {
   return (
     <button type="button" onClick={onClick} disabled={loading}
+      className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/50 focus-visible:ring-offset-2 focus-visible:outline-none"
       style={{ marginTop: '36px', width: '100%', background: loading ? '#ccc' : '#4294d8', color: '#fff', fontSize: '14px', fontWeight: 700, padding: '15px 24px', borderRadius: '10px', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', letterSpacing: '0.04em', textTransform: 'uppercase', transition: 'opacity 0.15s ease' }}
       onMouseEnter={(e) => { if (!loading) e.currentTarget.style.opacity = '0.9' }}
       onMouseLeave={(e) => { e.currentTarget.style.opacity = '1' }}>
@@ -266,47 +259,6 @@ function OrderSidebar({ summary, stripeDueToday, showDueToday }: { summary: Orde
   )
 }
 
-// ─── PaymentForm — must live inside <Elements> ────────────────────────────────
-
-function PaymentForm({ totalDisplay, onBack }: { totalDisplay: string | null; onBack: () => void }) {
-  const stripe = useStripe()
-  const elements = useElements()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!stripe || !elements) return
-    setLoading(true)
-    setError(null)
-    const { error: stripeError } = await stripe.confirmPayment({
-      elements,
-      confirmParams: { return_url: `${window.location.origin}/checkout/success` },
-    })
-    if (stripeError) setError(stripeError.message ?? 'Payment failed. Please try again.')
-    setLoading(false)
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <PaymentElement options={{ layout: 'tabs' }} />
-      {error && (
-        <div style={{ color: '#e53e3e', fontSize: '13px', marginTop: '14px', padding: '10px 14px', background: '#fff5f5', borderRadius: '8px', border: '1px solid #fed7d7' }}>
-          {error}
-        </div>
-      )}
-      <button type="submit" disabled={!stripe || loading}
-        style={{ marginTop: '24px', width: '100%', background: loading || !stripe ? '#ccc' : '#4294d8', color: '#fff', fontSize: '14px', fontWeight: 700, padding: '15px 24px', borderRadius: '10px', border: 'none', cursor: loading || !stripe ? 'not-allowed' : 'pointer', letterSpacing: '0.04em', textTransform: 'uppercase', transition: 'background 0.15s ease' }}>
-        {loading ? 'Processing…' : `Subscribe${totalDisplay ? ` — ${totalDisplay}` : ''}`}
-      </button>
-      <button type="button" onClick={onBack}
-        style={{ marginTop: '12px', fontSize: '12px', color: '#aaa', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0' }}>
-        ← Edit information
-      </button>
-    </form>
-  )
-}
-
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function CheckoutClient({ orderSummary, pricePayload }: Props) {
@@ -317,6 +269,44 @@ export default function CheckoutClient({ orderSummary, pricePayload }: Props) {
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [stripeDueToday, setStripeDueToday] = useState<string | null>(null)
   const [sessionLoading, setSessionLoading] = useState(false)
+
+  // Google Places autocomplete for shipping address
+  const { attachRef: shippingAutocompleteRef } = useGooglePlacesAutocomplete({
+    onSelect: useCallback((addr: { line1: string; city: string; province: string; postal: string }) => {
+      setForm((prev) => ({
+        ...prev,
+        shippingLine1: addr.line1,
+        shippingCity: addr.city,
+        shippingProvince: addr.province,
+        shippingPostal: addr.postal,
+      }))
+      setErrors((prev) => ({
+        ...prev,
+        shippingLine1: undefined,
+        shippingCity: undefined,
+        shippingPostal: undefined,
+      }))
+    }, []),
+  })
+
+  // Google Places autocomplete for emergency address
+  const { attachRef: emergencyAutocompleteRef } = useGooglePlacesAutocomplete({
+    onSelect: useCallback((addr: { line1: string; city: string; province: string; postal: string }) => {
+      setForm((prev) => ({
+        ...prev,
+        emergencyLine1: addr.line1,
+        emergencyCity: addr.city,
+        emergencyProvince: addr.province,
+        emergencyPostal: addr.postal,
+      }))
+      setErrors((prev) => ({
+        ...prev,
+        emergencyLine1: undefined,
+        emergencyCity: undefined,
+        emergencyPostal: undefined,
+      }))
+    }, []),
+  })
 
   function update(field: keyof FormState, value: string | boolean) {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -409,7 +399,7 @@ export default function CheckoutClient({ orderSummary, pricePayload }: Props) {
       {/* Layout */}
       <div style={{ maxWidth: '1060px', margin: '0 auto', padding: '40px 24px 80px' }}>
         <div style={{ fontSize: '18px', fontWeight: 700, color: '#171717', marginBottom: '20px' }}>Checkout</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '380px 1fr', gap: '32px', alignItems: 'start' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr]" style={{ gap: '32px', alignItems: 'start' }}>
 
         {/* Left: order summary */}
         <div style={{ position: 'sticky', top: '24px' }}>
@@ -429,21 +419,21 @@ export default function CheckoutClient({ orderSummary, pricePayload }: Props) {
                   <div style={SECTION_HEAD}>Contact</div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <Field label="Full name" required error={errors.purchaserName}>
-                        <FInput placeholder="Jane Smith" value={form.purchaserName} onChange={(e) => update('purchaserName', e.target.value)} error={errors.purchaserName} />
+                      <Field label="Full name" required error={errors.purchaserName} htmlFor="purchaserName">
+                        <FInput id="purchaserName" name="purchaserName" autoComplete="name" placeholder="Jane Smith…" value={form.purchaserName} onChange={(e) => update('purchaserName', e.target.value)} error={errors.purchaserName} />
                       </Field>
-                      <Field label="Phone">
-                        <FInput type="tel" placeholder="+1 (416) 555-0100" value={form.phone} onChange={(e) => update('phone', e.target.value)} />
+                      <Field label="Phone" htmlFor="phone">
+                        <FInput id="phone" name="phone" type="tel" autoComplete="tel" placeholder="+1 (416) 555-0100…" value={form.phone} onChange={(e) => update('phone', e.target.value)} />
                       </Field>
                     </div>
-                    <Field label="Email address" required error={errors.email}>
-                      <FInput type="email" placeholder="jane@example.com" value={form.email} onChange={(e) => update('email', e.target.value)} error={errors.email} />
+                    <Field label="Email address" required error={errors.email} htmlFor="email">
+                      <FInput id="email" name="email" type="email" autoComplete="email" spellCheck={false} placeholder="jane@example.com…" value={form.email} onChange={(e) => update('email', e.target.value)} error={errors.email} />
                     </Field>
                   </div>
                 </div>
                 <div>
                   <div style={SECTION_HEAD}>Shipping Address</div>
-                  <AddressBlock prefix="shipping" form={form} errors={errors} update={update} />
+                  <AddressBlock prefix="shipping" form={form} errors={errors} update={update} line1Ref={shippingAutocompleteRef} />
                 </div>
               </div>
               <ContinueButton onClick={handleContinue} label="Continue →" />
@@ -460,11 +450,11 @@ export default function CheckoutClient({ orderSummary, pricePayload }: Props) {
                 <div>
                   <div style={SECTION_HEAD}>Device User</div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                    <Field label="Device user's full name" required error={errors.deviceUserName} hint="The person who will wear the device — used for monitoring and emergency response.">
-                      <FInput placeholder="Robert Smith" value={form.deviceUserName} onChange={(e) => update('deviceUserName', e.target.value)} error={errors.deviceUserName} />
+                    <Field label="Device user's full name" required error={errors.deviceUserName} hint="The person who will wear the device — used for monitoring and emergency response." htmlFor="deviceUserName">
+                      <FInput id="deviceUserName" name="deviceUserName" autoComplete="off" placeholder="Robert Smith…" value={form.deviceUserName} onChange={(e) => update('deviceUserName', e.target.value)} error={errors.deviceUserName} />
                     </Field>
-                    <Field label="Device user's phone number" required error={errors.deviceUserPhone} hint="Primary contact number for the device user.">
-                      <FInput type="tel" placeholder="+1 (416) 555-0100" value={form.deviceUserPhone} onChange={(e) => update('deviceUserPhone', e.target.value)} error={errors.deviceUserPhone} />
+                    <Field label="Device user's phone number" required error={errors.deviceUserPhone} hint="Primary contact number for the device user." htmlFor="deviceUserPhone">
+                      <FInput id="deviceUserPhone" name="deviceUserPhone" type="tel" autoComplete="off" placeholder="+1 (416) 555-0100…" value={form.deviceUserPhone} onChange={(e) => update('deviceUserPhone', e.target.value)} error={errors.deviceUserPhone} />
                     </Field>
                   </div>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '9px', marginTop: '12px', cursor: 'pointer' }}>
@@ -480,11 +470,11 @@ export default function CheckoutClient({ orderSummary, pricePayload }: Props) {
                     <input type="checkbox" checked={form.emergencySameAsShipping} style={checkboxStyle} onChange={(e) => update('emergencySameAsShipping', e.target.checked)} />
                     <span style={{ fontSize: '13px', color: '#555' }}>Same as shipping address</span>
                   </label>
-                  {!form.emergencySameAsShipping && <AddressBlock prefix="emergency" form={form} errors={errors} update={update} />}
+                  {!form.emergencySameAsShipping && <AddressBlock prefix="emergency" form={form} errors={errors} update={update} line1Ref={emergencyAutocompleteRef} />}
                 </div>
               </div>
               <ContinueButton onClick={handleContinue} label="Continue to Payment →" loading={sessionLoading} />
-              <button onClick={() => setStep(1)} style={{ marginTop: '12px', fontSize: '12px', color: '#aaa', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0' }}>← Back</button>
+              <button onClick={() => setStep(1)} className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/40 focus-visible:outline-none focus-visible:rounded" style={{ marginTop: '12px', fontSize: '12px', color: '#aaa', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0' }}>← Back</button>
             </div>
           )}
 
@@ -507,9 +497,11 @@ export default function CheckoutClient({ orderSummary, pricePayload }: Props) {
                   Loading payment form…
                 </div>
               ) : (
-                <Elements stripe={stripePromise} options={{ clientSecret, appearance: STRIPE_APPEARANCE }}>
-                  <PaymentForm totalDisplay={orderSummary.totalDisplay} onBack={() => setStep(2)} />
-                </Elements>
+                <StripePaymentStep
+                  clientSecret={clientSecret}
+                  totalDisplay={orderSummary.totalDisplay}
+                  onBack={() => setStep(2)}
+                />
               )}
             </div>
           )}

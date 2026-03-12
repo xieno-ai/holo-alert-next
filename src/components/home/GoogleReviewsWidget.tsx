@@ -1,6 +1,11 @@
 'use client'
 
-import { ElfsightWidget } from 'next-elfsight-widget'
+import dynamic from 'next/dynamic'
+
+const ElfsightWidget = dynamic(
+  () => import('next-elfsight-widget').then((m) => m.ElfsightWidget),
+  { ssr: false }
+)
 
 export default function GoogleReviewsWidget() {
   const widgetId = process.env.NEXT_PUBLIC_ELFSIGHT_WIDGET_ID

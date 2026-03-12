@@ -63,7 +63,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
             style={{ gap: '28px' }}
           >
             {/* Badge logo */}
-            {badgeLogoUrl && (
+            {badgeLogoUrl ? (
               <Link href="/" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                 <Image
                   src={badgeLogoUrl}
@@ -73,7 +73,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
                   style={{ objectFit: 'contain' }}
                 />
               </Link>
-            )}
+            ) : null}
 
             {/* Solutions mega-menu trigger */}
             <div
@@ -98,7 +98,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
               >
                 Solutions
-                <ChevronDown size={14} />
+                <ChevronDown size={14} aria-hidden="true" />
               </button>
             </div>
 
@@ -154,6 +154,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
             {/* Phone — desktop only */}
             <a
               href="tel:18884114656"
+              aria-label="Call 1-888-411-4656"
               className="hidden lg:flex items-center"
               style={{
                 gap: '6px',
@@ -164,14 +165,14 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
                 transition: 'color 0.2s',
               }}
             >
-              <Phone size={16} />
+              <Phone size={16} aria-hidden="true" />
               1.888.411.4656
             </a>
 
             {/* CTA button — desktop only */}
             <Link
               href="/#products"
-              className="hidden lg:inline-flex items-center justify-center"
+              className="hidden lg:inline-flex items-center justify-center focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none"
               style={{
                 background: megaOpen ? '#171717' : '#4294d8',
                 color: '#fff',
@@ -220,7 +221,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
       </div>
 
       {/* Mega menu panel */}
-      {megaOpen && (
+      {megaOpen ? (
         <div
           onMouseEnter={openMega}
           onMouseLeave={closeMega}
@@ -317,7 +318,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </header>
   )
 }

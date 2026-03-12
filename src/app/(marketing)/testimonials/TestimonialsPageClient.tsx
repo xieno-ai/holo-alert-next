@@ -3,6 +3,7 @@
 import { useState } from 'react'
 
 const PAGE_SIZE = 9
+const WHITESPACE_RE = /\s+/g
 
 interface Testimonial {
   _id: string
@@ -42,7 +43,7 @@ function getAvatarColor(name: string) {
 }
 
 const StarIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 18 18" fill="none">
+  <svg width="15" height="15" viewBox="0 0 18 18" fill="none" aria-hidden="true">
     <path
       d="M8.99584 12.9523L12.1083 14.8348C12.6783 15.1798 13.3758 14.6698 13.2258 14.0248L12.4008 10.4848L15.1533 8.09982C15.6558 7.66482 15.3858 6.83982 14.7258 6.78732L11.1033 6.47982L9.68584 3.13482C9.43084 2.52732 8.56084 2.52732 8.30584 3.13482L6.88834 6.47232L3.26584 6.77982C2.60584 6.83232 2.33584 7.65732 2.83834 8.09232L5.59084 10.4773L4.76584 14.0173C4.61584 14.6623 5.31334 15.1723 5.88334 14.8273L8.99584 12.9523Z"
       fill="#EDB423"
@@ -55,7 +56,7 @@ function ReviewCard({ t }: { t: Testimonial }) {
   const initials = getInitials(t.name)
   const avatarColor = getAvatarColor(t.name)
   // Generate a handle-style string from name + location
-  const handle = '@' + t.name.toLowerCase().replace(/\s+/g, '').slice(0, 12)
+  const handle = '@' + t.name.toLowerCase().replace(WHITESPACE_RE, '').slice(0, 12)
 
   return (
     <div
@@ -165,10 +166,14 @@ export default function TestimonialsPageClient({ testimonials }: Props) {
   const cards = allCards.slice(0, visibleCount)
   const hasMore = visibleCount < allCards.length
 
-  // Split into 3 columns for masonry
-  const col1 = cards.filter((_, i) => i % 3 === 0)
-  const col2 = cards.filter((_, i) => i % 3 === 1)
-  const col3 = cards.filter((_, i) => i % 3 === 2)
+  // Split into 3 columns for masonry (single pass)
+  const col1: Testimonial[] = []
+  const col2: Testimonial[] = []
+  const col3: Testimonial[] = []
+  for (let i = 0; i < cards.length; i++) {
+    const dest = i % 3 === 0 ? col1 : i % 3 === 1 ? col2 : col3
+    dest.push(cards[i])
+  }
 
   return (
     <>
@@ -247,6 +252,7 @@ export default function TestimonialsPageClient({ testimonials }: Props) {
             <div style={{ textAlign: 'center', marginTop: '48px' }}>
               <button
                 onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+                className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/50 focus-visible:outline-none"
                 style={{
                   background: '#fff',
                   border: '1.5px solid #d0d0d0',

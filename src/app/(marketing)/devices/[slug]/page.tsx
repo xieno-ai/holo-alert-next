@@ -143,24 +143,20 @@ export default async function DevicePage({ params }: Params) {
     notFound()
   }
 
-  try {
-    addons = await sanityFetch<AddonData[]>({
+  // Fetch addons and all devices in parallel — they are independent
+  const [addonsResult, allDevicesResult] = await Promise.all([
+    sanityFetch<AddonData[]>({
       query: DEVICE_ADDONS_QUERY,
       params: { deviceId: device._id },
       tags: ['addon'],
-    }) ?? []
-  } catch {
-    // addons are optional — degrade gracefully
-  }
-
-  try {
-    allDevices = await sanityFetch<typeof allDevices>({
+    }).catch(() => null),
+    sanityFetch<typeof allDevices>({
       query: DEVICES_QUERY,
       tags: ['device'],
-    }) ?? []
-  } catch {
-    // other devices section is optional
-  }
+    }).catch(() => null),
+  ])
+  addons = addonsResult ?? []
+  allDevices = allDevicesResult ?? []
 
   const productName = device.name ?? 'Holo Pro'
 

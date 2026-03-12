@@ -64,9 +64,10 @@ const socialLinks = [
   },
 ]
 
-export default function Footer() {
-  const currentYear = new Date().getFullYear()
+// Hoisted: static value that doesn't change per-render (rule 6.3)
+const currentYear = new Date().getFullYear()
 
+export default function Footer() {
   return (
     <footer className="bg-brand-black text-white">
       <div className="mx-auto px-4 sm:px-6 lg:px-8 py-16" style={{ maxWidth: 'var(--max-w-container)' }}>

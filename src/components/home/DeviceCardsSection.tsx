@@ -13,7 +13,7 @@ function normalizeMonthly(val: string | undefined | null): string {
 }
 
 const CheckIcon = () => (
-  <div style={{ width: '20px', height: '20px', flexShrink: 0, background: '#111', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+  <div style={{ width: '20px', height: '20px', flexShrink: 0, background: '#111', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-hidden="true">
     <svg width="10" height="10" viewBox="0 0 10 10" fill="white">
       <path d="M3.75 8.51L1.16 5.92l1.18-1.18L3.75 6.15l4.12-4.12 1.18 1.18L3.75 8.51z" />
     </svg>
@@ -88,22 +88,22 @@ export default async function DeviceCardsSection() {
 
             return (
               <div key={device._id} style={cardStyle} className={isFeatured ? 'lg:scale-105' : ''}>
-                {isFeatured && (
+                {isFeatured ? (
                   <div style={{ textAlign: 'center', marginBottom: '8px' }}>
                     <span style={{ display: 'inline-block', background: '#4294d8', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '4px 12px', borderRadius: '100px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                       Most Popular
                     </span>
                   </div>
-                )}
+                ) : null}
 
                 <h3 style={{ fontSize: '28px', fontWeight: 700, letterSpacing: '0.2em', textAlign: 'center', color: '#111', textTransform: 'uppercase', margin: '0 0 10px' }}>
                   {device.name}
                 </h3>
-                {device.pricingCardSubhead && (
+                {device.pricingCardSubhead ? (
                   <p style={{ fontSize: '15px', fontWeight: 400, color: '#666', textAlign: 'center', lineHeight: 1.55, margin: '0 0 4px' }}>
                     {device.pricingCardSubhead}
                   </p>
-                )}
+                ) : null}
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '240px', overflow: 'hidden', margin: '16px 0 0' }}>
                   {imgSrc ? (
@@ -122,9 +122,9 @@ export default async function DeviceCardsSection() {
                 </div>
 
                 <div style={{ textAlign: 'center', fontSize: '14px', fontWeight: 600, color: '#222', padding: '14px 0 12px' }}>
-                  {device.monthlyPriceDisplay && (
+                  {device.monthlyPriceDisplay ? (
                     <>Available at <strong>{normalizeMonthly(device.monthlyPriceDisplay)}</strong></>
-                  )}
+                  ) : null}
                 </div>
 
                 <hr style={{ border: 'none', borderTop: '1px solid #ebebeb', margin: '0 0 16px' }} />
@@ -140,6 +140,7 @@ export default async function DeviceCardsSection() {
 
                 <Link
                   href={`/devices/${device.slug?.current}`}
+                  className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/50 focus-visible:ring-offset-2 focus-visible:outline-none"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -161,7 +162,7 @@ export default async function DeviceCardsSection() {
                   Explore {device.name}
                 </Link>
 
-                {device.variantNames && device.variantNames.length > 0 && (
+                {device.variantNames && device.variantNames.length > 0 ? (
                   <p style={{ fontSize: '12px', color: '#888', textAlign: 'center', margin: '4px 0 0', lineHeight: 1.4 }}>
                     Also available in{' '}
                     <Link
@@ -171,14 +172,14 @@ export default async function DeviceCardsSection() {
                       {device.variantNames.join(' & ')}
                     </Link>
                   </p>
-                )}
+                ) : null}
               </div>
             )
           })}
 
-          {devices.length === 0 && (
+          {devices.length === 0 ? (
             <p style={{ color: '#666', textAlign: 'center', width: '100%' }}>Loading devices…</p>
-          )}
+          ) : null}
         </div>
       </div>
     </section>

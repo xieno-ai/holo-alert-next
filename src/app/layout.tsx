@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { GoogleTagManager } from '@next/third-parties/google'
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import { Analytics } from '@vercel/analytics/next'
+import { preconnect, prefetchDNS } from 'react-dom'
 import { instrumentSans } from '@/lib/fonts'
 import './globals.css'
+import { DeferredAnalytics } from '@/components/DeferredAnalytics'
 
 export const metadata: Metadata = {
   title: {
@@ -32,16 +32,28 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Resource hints: preconnect to Sanity CDN (images), prefetch GTM DNS
+  preconnect('https://cdn.sanity.io')
+  prefetchDNS('https://www.googletagmanager.com')
+
   return (
     <html
       lang="en"
       className={`${instrumentSans.variable}`}
     >
-      {process.env.NODE_ENV === 'production' && <GoogleTagManager gtmId="GTM-N2J4XSL" />}
+      <head>
+        <meta name="theme-color" content="#ffffff" />
+      </head>
+      {process.env.NODE_ENV === 'production' ? <GoogleTagManager gtmId="GTM-N2J4XSL" /> : null}
       <body className="antialiased">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-brand-blue focus:text-white focus:rounded-md focus:text-sm focus:font-semibold"
+        >
+          Skip to main content
+        </a>
         {children}
-        <SpeedInsights />
-        <Analytics />
+        <DeferredAnalytics />
       </body>
     </html>
   )

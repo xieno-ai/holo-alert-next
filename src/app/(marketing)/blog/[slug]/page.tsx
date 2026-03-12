@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Image from 'next/image'
@@ -9,6 +10,12 @@ import { urlFor } from '@/sanity/lib/image'
 import BlogShareButtons from './BlogShareButtons'
 
 interface Params { params: Promise<{ slug: string }> }
+
+// ─── Cached fetch (deduplicated across generateMetadata + page render) ────────
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getPost = cache((slug: string) =>
+  sanityFetch<any>({ query: BLOG_POST_QUERY, params: { slug }, tags: ['blogPost'] })
+)
 
 // ─── Reading time ─────────────────────────────────────────────────────────────
 
@@ -148,8 +155,7 @@ function formatDate(d: string | null) {
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const post = await sanityFetch<any>({ query: BLOG_POST_QUERY, params: { slug }, tags: ['blogPost'] })
+  const post = await getPost(slug)
   if (!post) return {}
   return {
     title: post.seoTitle ?? `${post.title} | Holo Alert`,
@@ -163,8 +169,7 @@ export default async function BlogPostPage({ params }: Params) {
   const { slug } = await params
 
   const [post, latestPosts, relatedPosts] = await Promise.all([
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    sanityFetch<any>({ query: BLOG_POST_QUERY, params: { slug }, tags: ['blogPost'] }),
+    getPost(slug),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     sanityFetch<any[]>({ query: BLOG_POSTS_LATEST_QUERY, tags: ['blogPost'] }),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -182,8 +187,8 @@ export default async function BlogPostPage({ params }: Params) {
       {/* ── Breadcrumb ─────────────────────────────────────────────────── */}
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
         <nav className="flex items-center gap-2 pb-1 text-[13px] text-[#787878]" style={{ paddingTop: '16px' }}>
-          <Link href="/" className="hover:text-[#171717] transition-colors">
-            <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-label="Home">
+          <Link href="/" aria-label="Home" className="hover:text-[#171717] transition-colors">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <path d="M1.5 6.5L7 2l5.5 4.5V12.5a.5.5 0 0 1-.5.5H9.5V9.5h-5V13H2a.5.5 0 0 1-.5-.5V6.5z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
             </svg>
           </Link>
@@ -294,8 +299,8 @@ export default async function BlogPostPage({ params }: Params) {
       </div>
 
       {/* ── Related Posts ──────────────────────────────────────────────── */}
-      {relatedPosts && relatedPosts.length > 0 && (
-        <div className="border-t border-[#d9d9d9]">
+      {relatedPosts && relatedPosts.length > 0 ? (
+        <div className="border-t border-[#d9d9d9]" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 40px 80px' }}>
             <div className="flex items-center justify-between mb-10">
               <h2 className="text-[26px] font-bold text-[#171717]">Related Posts</h2>
@@ -331,7 +336,7 @@ export default async function BlogPostPage({ params }: Params) {
             </div>
           </div>
         </div>
-      )}
+      ) : null}
 
       {/* ── CTA Banner ─────────────────────────────────────────────────── */}
       <div className="bg-[#171717]">

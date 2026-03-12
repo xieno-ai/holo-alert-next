@@ -1,5 +1,3 @@
-'use client'
-
 interface PromoBannerProps {
   body: string
   ctaText?: string
@@ -34,7 +32,7 @@ export default function PromoBanner({ body, ctaText, ctaUrl }: PromoBannerProps)
       >
         {body}
       </p>
-      {ctaText && ctaUrl && (
+      {ctaText && ctaUrl ? (
         <a
           href={ctaUrl}
           style={{
@@ -57,7 +55,7 @@ export default function PromoBanner({ body, ctaText, ctaUrl }: PromoBannerProps)
         >
           {ctaText}
         </a>
-      )}
+      ) : null}
     </div>
   )
 }

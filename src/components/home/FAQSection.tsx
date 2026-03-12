@@ -38,11 +38,7 @@ export default async function FAQSection() {
 
         {/* Right: accordion */}
         <div>
-          {faqs.length > 0 ? (
-            <FAQAccordion faqs={faqs} />
-          ) : (
-            <FAQAccordion faqs={FALLBACK_FAQS} />
-          )}
+          <FAQAccordion faqs={faqs.length > 0 ? faqs : FALLBACK_FAQS} />
         </div>
 
       </div>

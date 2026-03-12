@@ -100,7 +100,7 @@ function GridCard({ post }: { post: BlogPost }) {
     : null
 
   return (
-    <article className="flex flex-col">
+    <article className="flex flex-col" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 420px' }}>
       {/* Image */}
       <Link href={`/blog/${post.slug.current}`} className="block relative overflow-hidden rounded-sm bg-[#f2f2f2]" style={{ aspectRatio: '4/3' }}>
         {imageUrl ? (
@@ -158,7 +158,7 @@ export default function BlogListing({ posts }: { posts: BlogPost[] }) {
       )}
 
       {/* Grid */}
-      {gridPosts.length > 0 && (
+      {gridPosts.length > 0 ? (
         <>
           <hr className="border-[#d9d9d9]" />
           <div className="py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
@@ -167,14 +167,14 @@ export default function BlogListing({ posts }: { posts: BlogPost[] }) {
             ))}
           </div>
         </>
-      )}
+      ) : null}
 
       {/* Load more */}
       {hasMore && (
         <div className="flex justify-center pb-20">
           <button
             onClick={() => setVisibleCount((n) => n + GRID_PAGE_SIZE)}
-            className="px-8 py-3 rounded-full bg-[#171717] text-white text-[14px] font-semibold hover:bg-[#333] transition-colors"
+            className="px-8 py-3 rounded-full bg-[#171717] text-white text-[14px] font-semibold hover:bg-[#333] transition-colors focus-visible:ring-2 focus-visible:ring-[#4294d8]/50 focus-visible:ring-offset-2 focus-visible:outline-none"
           >
             Load more
           </button>

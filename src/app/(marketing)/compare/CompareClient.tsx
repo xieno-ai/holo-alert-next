@@ -157,9 +157,9 @@ function normalizeAnnual(val: string | undefined | null): string {
   return `$${s}/yr`
 }
 
-// ─── Check icon ──────────────────────────────────────────────────────────────
+// ─── Check icon (hoisted static JSX) ─────────────────────────────────────────
 
-const CheckBadge = () => (
+const checkBadge = (
   <svg
     width="22"
     height="22"

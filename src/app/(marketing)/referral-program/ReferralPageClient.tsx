@@ -69,6 +69,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
     >
       <button
         onClick={() => setOpen((o) => !o)}
+        className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/40 focus-visible:outline-none focus-visible:rounded"
         style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -647,27 +648,35 @@ export default function ReferralPageClient() {
                   }}
                 >
                   <div>
-                    <label style={labelStyle}>First Name</label>
+                    <label htmlFor="ref-firstName" style={labelStyle}>First Name</label>
                     <input
+                      id="ref-firstName"
+                      name="firstName"
                       type="text"
-                      placeholder="Enter your first name"
+                      autoComplete="given-name"
+                      placeholder="Enter your first name…"
                       value={formData.firstName}
-                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, firstName: e.target.value }))}
                       required
                       style={inputStyle}
+                      className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/40 focus-visible:outline-none"
                       onFocus={(e) => { e.currentTarget.style.borderColor = '#4294d8'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(66,148,216,0.12)' }}
                       onBlur={(e) => { e.currentTarget.style.borderColor = '#d9d9d9'; e.currentTarget.style.boxShadow = 'none' }}
                     />
                   </div>
                   <div>
-                    <label style={labelStyle}>Last Name</label>
+                    <label htmlFor="ref-lastName" style={labelStyle}>Last Name</label>
                     <input
+                      id="ref-lastName"
+                      name="lastName"
                       type="text"
-                      placeholder="Enter your last name"
+                      autoComplete="family-name"
+                      placeholder="Enter your last name…"
                       value={formData.lastName}
-                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, lastName: e.target.value }))}
                       required
                       style={inputStyle}
+                      className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/40 focus-visible:outline-none"
                       onFocus={(e) => { e.currentTarget.style.borderColor = '#4294d8'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(66,148,216,0.12)' }}
                       onBlur={(e) => { e.currentTarget.style.borderColor = '#d9d9d9'; e.currentTarget.style.boxShadow = 'none' }}
                     />
@@ -684,27 +693,36 @@ export default function ReferralPageClient() {
                   }}
                 >
                   <div>
-                    <label style={labelStyle}>Email</label>
+                    <label htmlFor="ref-email" style={labelStyle}>Email</label>
                     <input
+                      id="ref-email"
+                      name="email"
                       type="email"
-                      placeholder="Enter your email"
+                      autoComplete="email"
+                      spellCheck={false}
+                      placeholder="Enter your email…"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                       required
                       style={inputStyle}
+                      className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/40 focus-visible:outline-none"
                       onFocus={(e) => { e.currentTarget.style.borderColor = '#4294d8'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(66,148,216,0.12)' }}
                       onBlur={(e) => { e.currentTarget.style.borderColor = '#d9d9d9'; e.currentTarget.style.boxShadow = 'none' }}
                     />
                   </div>
                   <div>
-                    <label style={labelStyle}>Phone Number</label>
+                    <label htmlFor="ref-phone" style={labelStyle}>Phone Number</label>
                     <input
+                      id="ref-phone"
+                      name="phone"
                       type="tel"
-                      placeholder="Phone Number"
+                      autoComplete="tel"
+                      placeholder="Phone Number…"
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
                       required
                       style={inputStyle}
+                      className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/40 focus-visible:outline-none"
                       onFocus={(e) => { e.currentTarget.style.borderColor = '#4294d8'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(66,148,216,0.12)' }}
                       onBlur={(e) => { e.currentTarget.style.borderColor = '#d9d9d9'; e.currentTarget.style.boxShadow = 'none' }}
                     />
@@ -713,17 +731,21 @@ export default function ReferralPageClient() {
 
                 {/* Who referred you */}
                 <div style={{ marginBottom: '20px' }}>
-                  <label style={labelStyle}>Who were you referred by?</label>
+                  <label htmlFor="ref-referredBy" style={labelStyle}>Who were you referred by?</label>
                   <textarea
-                    placeholder="Example Text"
+                    id="ref-referredBy"
+                    name="referredBy"
+                    autoComplete="off"
+                    placeholder="Name of person who referred you…"
                     value={formData.referredBy}
-                    onChange={(e) => setFormData({ ...formData, referredBy: e.target.value })}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, referredBy: e.target.value }))}
                     rows={3}
                     style={{
                       ...inputStyle,
                       resize: 'vertical',
                       minHeight: '72px',
                     }}
+                    className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/40 focus-visible:outline-none"
                     onFocus={(e) => { e.currentTarget.style.borderColor = '#4294d8'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(66,148,216,0.12)' }}
                     onBlur={(e) => { e.currentTarget.style.borderColor = '#d9d9d9'; e.currentTarget.style.boxShadow = 'none' }}
                   />
@@ -731,6 +753,7 @@ export default function ReferralPageClient() {
 
                 <button
                   type="submit"
+                  className="focus-visible:ring-2 focus-visible:ring-[#4294d8]/50 focus-visible:ring-offset-2 focus-visible:outline-none"
                   style={{
                     width: '100%',
                     background: '#4294d8',
@@ -947,7 +970,6 @@ const inputStyle: React.CSSProperties = {
   border: '1px solid #d9d9d9',
   borderRadius: '6px',
   padding: '10px 12px',
-  outline: 'none',
   transition: 'border-color 0.2s, box-shadow 0.2s',
   boxSizing: 'border-box',
 }
