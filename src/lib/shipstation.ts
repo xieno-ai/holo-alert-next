@@ -162,8 +162,9 @@ export async function createShipStationOrder(
     packages: [{ weight: { value: 1, unit: 'pound' } }],
   }
 
-  if (input.warehouseId) {
-    shipment.warehouse_id = input.warehouseId
+  const warehouseId = input.warehouseId || process.env.SHIPSTATION_WAREHOUSE_ID
+  if (warehouseId) {
+    shipment.warehouse_id = warehouseId
   }
 
   const res = await fetch(`${SHIPSTATION_BASE}/shipments`, {
