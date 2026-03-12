@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { PortableText } from '@portabletext/react'
 import { urlFor } from '@/sanity/lib/image'
+import { trackAddToCart } from '@/lib/analytics'
 
 interface Spec {
   label: string
@@ -602,7 +603,16 @@ export default function ProductHeroSection({ device, addons = [], variants = [] 
                 <div style={{ padding: '14px 20px 16px' }}>
                   <Link
                     href={buildCheckoutUrl(selectedPlan)}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      trackAddToCart({
+                        device_name: productName,
+                        device_slug: slug,
+                        plan_type: selectedPlan,
+                        price: selectedPlan === 'annual' ? annual : monthly,
+                        addons: Array.from(selectedAddons).map((id) => addons.find((a) => a._id === id)?.name).filter(Boolean) as string[],
+                      })
+                    }}
                     style={{
                       display: 'block',
                       textAlign: 'center' as const,
@@ -621,7 +631,15 @@ export default function ProductHeroSection({ device, addons = [], variants = [] 
                   </Link>
                   <Link
                     href={`/checkout?product=${slug}&plan=${selectedPlan}`}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      trackAddToCart({
+                        device_name: productName,
+                        device_slug: slug,
+                        plan_type: selectedPlan,
+                        price: selectedPlan === 'annual' ? annual : monthly,
+                      })
+                    }}
                     style={{
                       display: 'block',
                       textAlign: 'center' as const,

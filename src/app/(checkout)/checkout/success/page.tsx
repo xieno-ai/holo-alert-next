@@ -167,6 +167,7 @@ export default async function SuccessPage({
             deviceName={orderData.deviceName}
             total={orderData.amountTotal}
             currency={orderData.currency}
+            planType={orderData.plan}
           />
         )}
       </main>

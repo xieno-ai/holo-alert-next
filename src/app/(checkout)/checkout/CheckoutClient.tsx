@@ -4,6 +4,7 @@ import { useState, forwardRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useGooglePlacesAutocomplete } from '@/hooks/useGooglePlacesAutocomplete'
+import { trackBeginCheckout, trackCheckoutStep } from '@/lib/analytics'
 
 // Lazy-load Stripe — only needed when user reaches the payment step
 const StripePaymentStep = dynamic(() => import('./StripePaymentStep'), {
@@ -369,12 +370,15 @@ export default function CheckoutClient({ orderSummary, pricePayload }: Props) {
   }
 
   function handleContinue() {
-    if (step === 1) { if (validateStep1()) setStep(2) }
-    else if (step === 2) {
+    if (step === 1) {
+      if (validateStep1()) {
+        trackCheckoutStep({ step: 1, step_name: 'billing_shipping', device_name: orderSummary.deviceName, plan_type: orderSummary.plan })
+        setStep(2)
+      }
+    } else if (step === 2) {
       if (!validateStep2()) return
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const w = window as any; w.dataLayer = w.dataLayer || []
-      w.dataLayer.push({ event: 'begin_checkout', device_name: orderSummary.deviceName, plan_type: orderSummary.plan, currency: 'CAD' })
+      trackBeginCheckout({ device_name: orderSummary.deviceName, plan_type: orderSummary.plan })
+      trackCheckoutStep({ step: 2, step_name: 'alert_info', device_name: orderSummary.deviceName, plan_type: orderSummary.plan })
       startPayment()
     }
   }

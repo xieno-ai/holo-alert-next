@@ -1,6 +1,7 @@
 import Stripe from 'stripe'
 import { NextResponse } from 'next/server'
 import { sendOrderConfirmationEmail, type OrderEmailData } from '@/lib/email'
+import { createShipStationOrder, parseShippingAddress } from '@/lib/shipstation'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
@@ -157,6 +158,63 @@ export async function POST(request: Request) {
     } catch (emailErr) {
       // Email failure should not break the webhook — log and continue
       console.error('[webhook] Failed to send order confirmation email:', emailErr)
+    }
+
+    // --- Create order in ShipStation for fulfillment ---
+    try {
+      console.log('[webhook] Creating ShipStation order...')
+
+      const meta = subscription.metadata ?? {}
+      const customerId = typeof subscription.customer === 'string'
+        ? subscription.customer
+        : (subscription.customer as Stripe.Customer).id
+      const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer
+
+      // Parse the flat shipping address string into structured fields
+      const shipTo = parseShippingAddress(
+        meta.shipping ?? '',
+        meta.purchaser_name ?? customer.name ?? 'Customer',
+        meta.phone,
+      )
+
+      // Build line items from subscription items
+      const ssItems: { name: string; quantity: number; unitPrice: number; sku?: string }[] = []
+
+      // Get invoice to extract line item pricing
+      const ssInvoiceId = (event.data.object as unknown as { id?: string }).id
+      if (ssInvoiceId) {
+        const ssInvoiceRes = await fetch(
+          `https://api.stripe.com/v1/invoices/${ssInvoiceId}?expand[]=lines.data`,
+          { headers: { Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}` } },
+        )
+        const ssInvoiceData = await ssInvoiceRes.json() as {
+          total?: number
+          tax?: number
+          lines?: { data: { description?: string; amount?: number; quantity?: number }[] }
+        }
+
+        for (const line of ssInvoiceData.lines?.data ?? []) {
+          ssItems.push({
+            name: line.description ?? meta.device_name ?? 'Holo Alert Device',
+            quantity: line.quantity ?? 1,
+            unitPrice: (line.amount ?? 0) / 100,
+          })
+        }
+
+        const result = await createShipStationOrder({
+          orderNumber: subscriptionId.slice(-12),
+          customerEmail: customer.email ?? '',
+          shipTo,
+          items: ssItems,
+          amountPaid: (ssInvoiceData.total ?? 0) / 100,
+          taxAmount: (ssInvoiceData.tax ?? 0) / 100,
+        })
+
+        console.log(`[webhook] ShipStation order created: #${result.orderNumber} (shipmentId: ${result.shipmentId})`)
+      }
+    } catch (ssErr) {
+      // ShipStation failure should not break the webhook — log and continue
+      console.error('[webhook] Failed to create ShipStation order:', ssErr)
     }
   }
 

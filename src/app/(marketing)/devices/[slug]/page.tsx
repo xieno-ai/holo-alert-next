@@ -14,6 +14,7 @@ import ProductContactCTA from '@/components/product/ProductContactCTA'
 import ProductAmbientVideoSection from '@/components/product/ProductAmbientVideoSection'
 import TestimonialsColumnsSection from '@/components/product/TestimonialsColumnsSection'
 import OtherDevicesSection from '@/components/product/OtherDevicesSection'
+import ViewItemTracker from '@/components/product/ViewItemTracker'
 
 interface Params {
   params: Promise<{ slug: string }>
@@ -162,6 +163,12 @@ export default async function DevicePage({ params }: Params) {
 
   return (
     <>
+      <ViewItemTracker
+        deviceName={productName}
+        deviceSlug={slug}
+        monthlyPrice={device.monthlyPriceDisplay}
+        annualPrice={device.annualPriceDisplay}
+      />
       <ProductHeroSection device={device} addons={addons} variants={device.variants} />
       <ProductFeaturesSection
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

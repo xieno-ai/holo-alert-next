@@ -4,6 +4,7 @@ import { preconnect, prefetchDNS } from 'react-dom'
 import { instrumentSans } from '@/lib/fonts'
 import './globals.css'
 import { DeferredAnalytics } from '@/components/DeferredAnalytics'
+import AnalyticsPageTracker from '@/components/AnalyticsPageTracker'
 
 export const metadata: Metadata = {
   title: {
@@ -53,6 +54,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         {children}
+        <AnalyticsPageTracker />
         <DeferredAnalytics />
       </body>
     </html>

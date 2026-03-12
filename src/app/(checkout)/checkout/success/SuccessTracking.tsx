@@ -1,12 +1,14 @@
 'use client'
 
 import { useEffect } from 'react'
+import { trackPurchase } from '@/lib/analytics'
 
 interface Props {
   sessionId: string
   deviceName: string
   total: number
   currency: string
+  planType?: string
 }
 
 export default function SuccessTracking({
@@ -14,19 +16,17 @@ export default function SuccessTracking({
   deviceName,
   total,
   currency,
+  planType,
 }: Props) {
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const w = window as any
-    w.dataLayer = w.dataLayer || []
-    w.dataLayer.push({
-      event: 'purchase',
+    trackPurchase({
       transaction_id: sessionId,
       device_name: deviceName,
       value: total / 100,
-      currency: currency.toUpperCase(),
+      currency,
+      plan_type: planType,
     })
-  }, [sessionId, deviceName, total, currency])
+  }, [sessionId, deviceName, total, currency, planType])
 
   return null
 }
