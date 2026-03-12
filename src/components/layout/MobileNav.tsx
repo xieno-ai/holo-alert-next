@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { Phone } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { SheetClose } from '@/components/ui/sheet'
 
 const exploreLinks = [
@@ -12,7 +11,6 @@ const exploreLinks = [
 
 const programLinks = [
   { label: 'Referral Program', href: '/referral-program' },
-  { label: 'Savings Program', href: '/savings-program' },
 ]
 
 export default function MobileNav() {
@@ -79,16 +77,18 @@ export default function MobileNav() {
       <div className="border-t border-border pt-4 pb-6 px-4 space-y-3">
         <a
           href="tel:18884450192"
-          className="flex items-center gap-2 text-brand-black font-semibold text-sm"
+          className="flex items-center gap-2 text-brand-black text-sm"
         >
           <Phone className="h-4 w-4 text-brand-blue" />
-          1-888-445-0192
+          <span><span className="font-semibold">Sales:</span> 1-888-445-0192</span>
         </a>
-        <SheetClose asChild>
-          <Button asChild className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white">
-            <Link href="/devices">Get Started</Link>
-          </Button>
-        </SheetClose>
+        <a
+          href="tel:18884114656"
+          className="flex items-center gap-2 text-brand-black text-sm"
+        >
+          <Phone className="h-4 w-4 text-brand-blue" />
+          <span><span className="font-semibold">Customer Service:</span> 1-888-411-4656</span>
+        </a>
       </div>
     </div>
   )

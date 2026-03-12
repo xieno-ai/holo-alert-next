@@ -16,8 +16,16 @@ export default function ProductAmbientVideoSection({ videoUrl }: Props) {
   if (!videoUrl) return null
 
   return (
-    <section style={{ background: '#ffffff', padding: '60px 40px 80px' }}>
+    <section className="ambient-video-section" style={{ background: '#ffffff', padding: '60px 40px 80px' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .ambient-video-section { padding: 32px 16px 40px !important; }
+          .ambient-video-container { aspect-ratio: 16 / 10 !important; border-radius: 12px !important; }
+          .ambient-video-text { padding: 0 16px !important; }
+        }
+      `}</style>
       <div
+        className="ambient-video-container"
         style={{
           maxWidth: '1200px',
           margin: '0 auto',
@@ -53,7 +61,7 @@ export default function ProductAmbientVideoSection({ videoUrl }: Props) {
         }} />
 
         {/* Text overlay */}
-        <div style={{
+        <div className="ambient-video-text" style={{
           position: 'absolute',
           inset: 0,
           display: 'flex',

@@ -347,7 +347,7 @@ export default function SuccessContent({ firstName, email, deviceName, plan, ite
                 style={{
                   width: '52px',
                   height: '52px',
-                  background: '#f46036',
+                  background: '#4294d8',
                 }}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -369,7 +369,7 @@ export default function SuccessContent({ firstName, email, deviceName, plan, ite
                 href="/emergency-contacts"
                 className="inline-flex items-center justify-center gap-2 font-semibold text-white text-[14px] rounded-lg"
                 style={{
-                  background: '#f46036',
+                  background: '#4294d8',
                   padding: '14px 36px',
                   letterSpacing: '0.03em',
                   transition: 'opacity 0.15s ease',

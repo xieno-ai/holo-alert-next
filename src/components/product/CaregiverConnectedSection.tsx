@@ -3,24 +3,26 @@
 import { useState } from 'react'
 import Image from 'next/image'
 
-const ACCORDION_ITEMS = [
+const DEFAULT_HEADING = 'Caregiver\nConnected'
+
+const DEFAULT_DESCRIPTION = `The Holo Alert Caregiver App provides an extra layer of support and connection. With this easy-to-use app, family members can stay informed and involved in your well-being.
+
+They can locate your device on demand, receive notifications for button presses and falls, and even track your daily steps. You'll have peace of mind knowing your loved ones are always connected and ready to assist.`
+
+const DEFAULT_FEATURES = [
   {
-    num: '01',
     title: 'Find Your Device with Ease',
     body: 'Misplaced your pendant? No problem. Use the app to quickly locate your device on a map, whether it\'s at home or somewhere else.',
   },
   {
-    num: '02',
     title: 'Stay Informed with Real-Time Alerts',
     body: 'Get instant notifications on your phone about important events, like button presses, detected falls, low battery, and more. Stay connected and informed, even when you\'re away.',
   },
   {
-    num: '03',
     title: 'View Activity and History with Ease',
     body: 'Monitor activity levels and health trends with the app. View a history of button presses and track daily steps to stay informed about your well-being.',
   },
   {
-    num: '04',
     title: 'Your Privacy, Our Priority',
     body: 'Rest assured that your information is always protected. You control who sees your information, maintaining your privacy and peace of mind.',
   },
@@ -172,33 +174,107 @@ function PhoneMockup({ front }: { front: boolean }) {
   )
 }
 
+interface AppFeature {
+  _key?: string
+  title?: string
+  body?: string
+}
+
 interface Props {
   backgroundImage?: string
   foregroundImage?: string
   foregroundImageAlt?: string
+  heading?: string
+  description?: string
+  features?: AppFeature[]
 }
 
-export default function CaregiverConnectedSection({ backgroundImage, foregroundImage, foregroundImageAlt }: Props) {
+export default function CaregiverConnectedSection({
+  backgroundImage,
+  foregroundImage,
+  foregroundImageAlt,
+  heading,
+  description,
+  features,
+}: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
+  const displayHeading = heading || DEFAULT_HEADING
+  const displayDescription = description || DEFAULT_DESCRIPTION
+  const displayFeatures: AppFeature[] = features?.length ? features : DEFAULT_FEATURES
+
+  // Split description into paragraphs (by double newline)
+  const paragraphs = displayDescription.split(/\n\n+/).filter(Boolean)
+
   return (
-    <section style={{ background: '#fff', overflow: 'hidden' }}>
-      <div style={{
+    <section className="caregiver-section" style={{ background: '#fff', overflow: 'hidden' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .caregiver-grid {
+            grid-template-columns: 1fr !important;
+            min-height: auto !important;
+            padding: 0 16px !important;
+          }
+          .caregiver-imagery {
+            min-height: 380px !important;
+            margin: 0 !important;
+            border-radius: 14px !important;
+          }
+          .caregiver-foreground {
+            padding: 24px 16px !important;
+          }
+          .caregiver-phones-fallback-back {
+            display: none !important;
+          }
+          .caregiver-phones-fallback-front {
+            transform: scale(0.78) !important;
+          }
+          .caregiver-content {
+            padding: 32px 4px !important;
+          }
+          .caregiver-content h2 {
+            font-size: clamp(28px, 8vw, 40px) !important;
+            margin-bottom: 16px !important;
+          }
+          .caregiver-accordion-title {
+            font-size: 14px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .caregiver-imagery {
+            min-height: 340px !important;
+            border-radius: 12px !important;
+          }
+          .caregiver-foreground {
+            padding: 20px 12px !important;
+          }
+          .caregiver-phones-fallback-front {
+            transform: scale(0.65) !important;
+          }
+          .caregiver-content {
+            padding: 24px 0 !important;
+          }
+        }
+      `}</style>
+      <div className="caregiver-grid" style={{
         maxWidth: '1200px',
         margin: '0 auto',
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        minHeight: '680px',
+        minHeight: '560px',
       }}>
 
         {/* ── Left: app imagery ── */}
-        <div style={{
+        <div className="caregiver-imagery" style={{
           position: 'relative',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           overflow: 'hidden',
-          minHeight: '560px',
+          minHeight: '500px',
+          borderRadius: '16px',
+          alignSelf: 'center',
+          margin: '24px 0',
         }}>
           {/* Background layer */}
           {backgroundImage ? (
@@ -213,28 +289,35 @@ export default function CaregiverConnectedSection({ backgroundImage, foregroundI
             <div style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(160deg, #0d1f2d 0%, #1a3a52 40%, #0f2538 100%)',
+              background: `
+                radial-gradient(ellipse at 20% 50%, rgba(66,148,216,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 30%, rgba(69,184,100,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 80%, rgba(66,148,216,0.05) 0%, transparent 50%),
+                linear-gradient(160deg, #f0f4f8 0%, #f7f7f7 40%, #eef2f7 100%)
+              `,
             }} />
           )}
-          {/* Overlay to darken background behind foreground image */}
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.25)', zIndex: 1 }} />
+          {/* Overlay — darken only when a real background image is present */}
+          {backgroundImage && (
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.25)', zIndex: 1 }} />
+          )}
           {/* Foreground layer */}
-          <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px', width: '100%', height: '100%' }}>
+          <div className="caregiver-foreground" style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', width: '100%', height: '100%' }}>
             {foregroundImage ? (
               <Image
                 src={foregroundImage}
                 alt={foregroundImageAlt ?? 'Holo Alert caregiver app'}
                 width={420}
                 height={520}
-                style={{ objectFit: 'contain', maxHeight: '520px', filter: 'drop-shadow(0 32px 64px rgba(0,0,0,0.5))' }}
+                style={{ objectFit: 'contain', maxWidth: '100%', maxHeight: '100%', filter: 'drop-shadow(0 32px 64px rgba(0,0,0,0.5))' }}
               />
             ) : (
               <>
                 {/* CSS phone mockup fallback */}
-                <div style={{ position: 'absolute', top: '30px', left: '110px', zIndex: 1, opacity: 0.9 }}>
+                <div className="caregiver-phones-fallback-back" style={{ position: 'absolute', top: '30px', left: '110px', zIndex: 1, opacity: 0.9 }}>
                   <PhoneMockup front={false} />
                 </div>
-                <div style={{ position: 'relative', zIndex: 2 }}>
+                <div className="caregiver-phones-fallback-front" style={{ position: 'relative', zIndex: 2 }}>
                   <PhoneMockup front={true} />
                 </div>
               </>
@@ -243,9 +326,9 @@ export default function CaregiverConnectedSection({ backgroundImage, foregroundI
         </div>
 
         {/* ── Right: content ── */}
-        <div style={{
+        <div className="caregiver-content" style={{
           background: '#fff',
-          padding: '72px 64px',
+          padding: '48px 64px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -258,40 +341,58 @@ export default function CaregiverConnectedSection({ backgroundImage, foregroundI
             lineHeight: 1.05,
             letterSpacing: '-0.025em',
             margin: '0 0 24px',
+            whiteSpace: 'pre-line',
           }}>
-            Caregiver<br />Connected
+            {displayHeading}
           </h2>
 
-          <p style={{ fontSize: '15px', color: '#787878', lineHeight: 1.7, margin: '0 0 14px' }}>
-            The Holo Alert Caregiver App provides an extra layer of support and connection. With this easy-to-use app, family members can stay informed and involved in your well-being.
-          </p>
-          <p style={{ fontSize: '15px', color: '#787878', lineHeight: 1.7, margin: '0 0 32px' }}>
-            They can locate your device on demand, receive notifications for button presses and falls, and even track your daily steps. You&apos;ll have peace of mind knowing your loved ones are always connected and ready to assist.
-          </p>
+          {paragraphs.map((p, i) => (
+            <p key={i} style={{
+              fontSize: '15px',
+              color: '#787878',
+              lineHeight: 1.7,
+              margin: i === paragraphs.length - 1 ? '0 0 32px' : '0 0 14px',
+            }}>
+              {p}
+            </p>
+          ))}
 
           <div style={{ marginBottom: '40px' }}>
-            <a
-              href="#"
+            <button
+              type="button"
+              onClick={() => {
+                const hero = document.querySelector('.product-hero-section')
+                if (hero) hero.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }}
               style={{
-                display: 'inline-block',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '7px',
                 background: '#171717',
                 color: '#fff',
-                fontSize: '14px',
+                fontSize: '12px',
                 fontWeight: 600,
-                padding: '12px 24px',
+                padding: '7px 14px',
                 borderRadius: '100px',
-                textDecoration: 'none',
-                letterSpacing: '0.01em',
+                border: 'none',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
               }}
             >
-              Learn More
-            </a>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M16 10a4 4 0 01-8 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Order Holo Pro
+            </button>
           </div>
 
           {/* Accordion */}
           <div>
-            {ACCORDION_ITEMS.map((item, i) => (
-              <div key={i}>
+            {displayFeatures.map((item, i) => (
+              <div key={item._key ?? i}>
                 <div style={{ height: '1px', background: '#e2e2e2' }} />
                 <button
                   onClick={() => setOpenIndex(openIndex === i ? null : i)}
@@ -307,8 +408,10 @@ export default function CaregiverConnectedSection({ backgroundImage, foregroundI
                     textAlign: 'left',
                   }}
                 >
-                  <span style={{ fontSize: '11px', color: '#4294d8', fontWeight: 700, letterSpacing: '0.05em', minWidth: '20px' }}>{item.num}</span>
-                  <span style={{ flex: 1, fontSize: '15px', fontWeight: 600, color: '#171717', lineHeight: 1.3 }}>{item.title}</span>
+                  <span style={{ fontSize: '11px', color: '#4294d8', fontWeight: 700, letterSpacing: '0.05em', minWidth: '20px' }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="caregiver-accordion-title" style={{ flex: 1, fontSize: '15px', fontWeight: 600, color: '#171717', lineHeight: 1.3 }}>{item.title}</span>
                   <span style={{
                     width: '24px',
                     height: '24px',

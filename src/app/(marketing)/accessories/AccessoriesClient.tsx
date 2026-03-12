@@ -74,13 +74,13 @@ export default function AccessoriesClient() {
             </h1>
 
             <p
+              className="acc-description"
               style={{
                 fontFamily: 'var(--font-instrument-sans), sans-serif',
                 fontSize: '15px',
                 color: '#555',
                 lineHeight: 1.7,
                 margin: '0 0 32px',
-                textAlign: 'center',
               }}
             >
               Exciting updates are coming! Leave your email to stay informed about our latest
@@ -133,7 +133,7 @@ export default function AccessoriesClient() {
                     background: '#fff',
                     border: '1px solid #d9d9d9',
                     borderRadius: '6px',
-                    padding: '10px 12px',
+                    padding: '12px 14px',
                     outline: 'none',
                     boxSizing: 'border-box',
                     marginBottom: '12px',
@@ -150,12 +150,13 @@ export default function AccessoriesClient() {
                 />
                 <button
                   type="submit"
+                  className="acc-submit"
                   style={{
                     background: '#4294d8',
                     color: '#fff',
                     border: 'none',
                     borderRadius: '6px',
-                    padding: '10px 28px',
+                    padding: '12px 28px',
                     fontFamily: 'var(--font-instrument-sans), sans-serif',
                     fontSize: '14px',
                     fontWeight: 600,
@@ -194,6 +195,7 @@ export default function AccessoriesClient() {
             {accessoryImages.map((img, i) => (
               <div
                 key={i}
+                className="acc-grid-cell"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -223,10 +225,51 @@ export default function AccessoriesClient() {
       </div>{/* end page shell */}
 
       <style>{`
+        @media (min-width: 769px) {
+          .acc-description { text-align: center; }
+        }
+        @media (max-width: 1024px) {
+          .acc-wrap {
+            flex-direction: column;
+            min-height: auto !important;
+          }
+          .acc-left {
+            flex: none !important;
+            padding: 60px 0 32px !important;
+            align-items: flex-start !important;
+          }
+          .acc-right {
+            flex: none !important;
+            padding: 0 0 60px !important;
+          }
+          .acc-submit {
+            width: 100%;
+          }
+        }
         @media (max-width: 768px) {
-          .acc-wrap { flex-direction: column; padding: 0 20px !important; }
-          .acc-left { flex: none !important; padding: 60px 0 !important; }
-          .acc-right { flex: none !important; padding: 0 0 60px !important; }
+          .acc-wrap {
+            padding: 0 20px !important;
+          }
+          .acc-left {
+            padding: 48px 0 28px !important;
+          }
+          .acc-left h1 {
+            font-size: 36px !important;
+            white-space: normal !important;
+          }
+          .acc-description {
+            font-size: 14px !important;
+            text-align: left !important;
+          }
+          .acc-right {
+            padding: 0 0 48px !important;
+          }
+          .acc-grid-cell {
+            padding: 20px !important;
+          }
+          #acc-email {
+            font-size: 16px !important; /* prevents iOS zoom on focus */
+          }
         }
       `}</style>
     </>

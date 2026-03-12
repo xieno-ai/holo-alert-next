@@ -196,8 +196,22 @@ export default function ProductHeroSection({ device, addons = [], variants = [] 
   const slug = activeVariant.slug?.current ?? 'holo-pro'
 
   return (
-    <section style={{ background: '#fff', padding: '12px 40px 40px' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'start' }}>
+    <section className="product-hero-section" style={{ background: '#fff', padding: '12px 40px 40px' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .product-hero-section { padding: 12px 16px 32px !important; }
+          .product-hero-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+          .product-hero-thumbs { gap: 6px !important; }
+          .product-hero-thumbs button { width: 56px !important; height: 56px !important; }
+          .product-hero-right { padding-top: 0 !important; }
+          .product-hero-h1 { font-size: clamp(28px, 8vw, 36px) !important; }
+        }
+        @media (max-width: 480px) {
+          .product-hero-section { padding: 8px 12px 24px !important; }
+          .product-hero-grid { gap: 24px !important; }
+        }
+      `}</style>
+      <div className="product-hero-grid" style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'start' }}>
 
         {/* LEFT: Image gallery */}
         <div>
@@ -233,7 +247,7 @@ export default function ProductHeroSection({ device, addons = [], variants = [] 
           </div>
 
           {/* Thumbnails — always show 5 slots */}
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="product-hero-thumbs" style={{ display: 'flex', gap: '10px' }}>
             {Array.from({ length: 5 }).map((_, i) => {
               const img = allImages[i]
               const isActive = i === activeIdx
@@ -282,7 +296,7 @@ export default function ProductHeroSection({ device, addons = [], variants = [] 
         </div>
 
         {/* RIGHT: Product info + pricing */}
-        <div style={{ paddingTop: '12px' }}>
+        <div className="product-hero-right" style={{ paddingTop: '12px' }}>
 
           {/* Eyebrow */}
           <span style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#4294d8', display: 'block', marginBottom: '14px' }}>
@@ -355,7 +369,7 @@ export default function ProductHeroSection({ device, addons = [], variants = [] 
           )}
 
           {/* Name */}
-          <h1 style={{ fontSize: 'clamp(36px, 4vw, 56px)', fontWeight: 800, color: '#171717', letterSpacing: '0.1em', textTransform: 'uppercase' as const, margin: '0 0 16px', lineHeight: 1.05 }}>
+          <h1 className="product-hero-h1" style={{ fontSize: 'clamp(36px, 4vw, 56px)', fontWeight: 800, color: '#171717', letterSpacing: '0.1em', textTransform: 'uppercase' as const, margin: '0 0 16px', lineHeight: 1.05 }}>
             {productName}
           </h1>
 

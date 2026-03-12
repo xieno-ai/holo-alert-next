@@ -384,6 +384,7 @@ export default function CompareClient({ devices }: { devices: Device[] }) {
 
   return (
     <div
+      className="compare-page"
       style={{
         fontFamily: 'Instrument Sans, sans-serif',
         background: '#fff',
@@ -392,8 +393,60 @@ export default function CompareClient({ devices }: { devices: Device[] }) {
         paddingBottom: '100px',
       }}
     >
+      <style>{`
+        @media (max-width: 768px) {
+          .compare-page { padding-bottom: 60px !important; }
+          .compare-inner { padding: 0 16px !important; }
+          .compare-sticky-bar { display: none !important; }
+          .compare-selector-row {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+          .compare-images-row {
+            grid-template-columns: 1fr !important;
+            gap: 24px !important;
+          }
+          .compare-images-row > div {
+            border-right: none !important;
+            border-bottom: 1px solid #f2f2f2;
+            padding-bottom: 24px !important;
+          }
+          .compare-images-row > div:last-child { border-bottom: none; }
+          .compare-device-img { height: 200px !important; }
+          .compare-spec-row {
+            grid-template-columns: 1fr !important;
+          }
+          .compare-spec-label {
+            border-right: none !important;
+            padding: 12px 16px 4px !important;
+            font-weight: 700 !important;
+          }
+          .compare-spec-values {
+            display: grid;
+            grid-template-columns: repeat(${cols.length}, 1fr);
+            border-bottom: 1px solid #f2f2f2;
+          }
+          .compare-spec-value {
+            padding: 8px 12px 12px !important;
+            font-size: 13px !important;
+            border-right: none !important;
+          }
+          .compare-bottom-cta {
+            grid-template-columns: 1fr !important;
+            gap: 24px !important;
+          }
+          .compare-bottom-cta > div:first-child { display: none !important; }
+          .compare-bottom-cta > div {
+            border-right: none !important;
+          }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .compare-inner { padding: 0 24px !important; }
+        }
+      `}</style>
       {/* ── Sticky device name bar ──────────────────────────────────────── */}
       <div
+        className="compare-sticky-bar"
         style={{
           position: 'fixed',
           top: '72px',
@@ -457,7 +510,7 @@ export default function CompareClient({ devices }: { devices: Device[] }) {
           })}
         </div>
       </div>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
+      <div className="compare-inner" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
 
         {/* ── Page Header ────────────────────────────────────────────── */}
         <div style={{ textAlign: 'center', marginBottom: '52px' }}>
@@ -499,6 +552,7 @@ export default function CompareClient({ devices }: { devices: Device[] }) {
 
         {/* ── Device Selector Row ─────────────────────────────────────── */}
         <div
+          className="compare-selector-row"
           style={{
             display: 'grid',
             gridTemplateColumns: `repeat(${cols.length}, 1fr)`,
@@ -519,6 +573,7 @@ export default function CompareClient({ devices }: { devices: Device[] }) {
         {/* ── Product Images + Price + CTA ────────────────────────────── */}
         <div
           ref={imagesRef}
+          className="compare-images-row"
           style={{
             display: 'grid',
             gridTemplateColumns: `repeat(${cols.length}, 1fr)`,
@@ -778,6 +833,7 @@ export default function CompareClient({ devices }: { devices: Device[] }) {
 
         {/* ── Bottom CTA row ───────────────────────────────────────────── */}
         <div
+          className="compare-bottom-cta"
           style={{
             display: 'grid',
             gridTemplateColumns: `1fr repeat(${cols.length}, 1fr)`,

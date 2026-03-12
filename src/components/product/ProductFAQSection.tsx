@@ -52,11 +52,21 @@ export default async function ProductFAQSection({ productName = 'Holo Pro' }: Pr
   const displayFaqs = faqs.length > 0 ? faqs : FALLBACK_FAQS
 
   return (
-    <section style={{ background: '#fff', padding: '100px 40px' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'start' }}>
+    <section className="faq-section" style={{ background: '#fff', padding: '100px 40px' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .faq-section { padding: 60px 16px !important; }
+          .faq-grid {
+            grid-template-columns: 1fr !important;
+            gap: 32px !important;
+          }
+          .faq-sticky { position: relative !important; top: auto !important; }
+        }
+      `}</style>
+      <div className="faq-grid" style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'start' }}>
 
         {/* Left */}
-        <div style={{ position: 'sticky', top: '120px' }}>
+        <div className="faq-sticky" style={{ position: 'sticky', top: '120px' }}>
           <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#4294d8', marginBottom: '12px' }}>
             FAQ
           </div>

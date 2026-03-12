@@ -208,6 +208,13 @@ export const device = defineType({
               fields: [defineField({ name: 'alt', title: 'Alt Text', type: 'string' })],
               description: 'Image displayed in the right panel when this feature is active',
             }),
+            defineField({
+              name: 'video',
+              title: 'Feature Video',
+              type: 'file',
+              options: { accept: 'video/mp4,video/webm' },
+              description: 'Optional MP4/WebM video displayed instead of the image when present. Keep under 500KB for performance.',
+            }),
           ],
           preview: {
             select: { title: 'title' },
@@ -337,6 +344,21 @@ export const device = defineType({
       initialValue: false,
     }),
     defineField({
+      name: 'caregiverAppHeading',
+      title: 'Caregiver App — Section Heading',
+      type: 'string',
+      description: 'Main heading for the Caregiver Connected section. Defaults to "Caregiver Connected".',
+      hidden: ({ document }) => !document?.hasCaregiverApp,
+    }),
+    defineField({
+      name: 'caregiverAppDescription',
+      title: 'Caregiver App — Description',
+      type: 'text',
+      rows: 4,
+      description: 'Introductory paragraph(s) for the Caregiver Connected section. Separate paragraphs with a blank line.',
+      hidden: ({ document }) => !document?.hasCaregiverApp,
+    }),
+    defineField({
       name: 'caregiverAppBackgroundImage',
       title: 'Caregiver App — Background Image',
       type: 'image',
@@ -352,6 +374,26 @@ export const device = defineType({
       options: { hotspot: true },
       description: 'App screenshot displayed in the foreground of the left panel — shows the caregiver app UI',
       fields: [defineField({ name: 'alt', title: 'Alt Text', type: 'string' })],
+      hidden: ({ document }) => !document?.hasCaregiverApp,
+    }),
+    defineField({
+      name: 'caregiverAppFeatures',
+      title: 'Caregiver App — Features Accordion',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'appFeature',
+          fields: [
+            defineField({ name: 'title', title: 'Feature Title', type: 'string' }),
+            defineField({ name: 'body', title: 'Feature Description', type: 'text', rows: 3 }),
+          ],
+          preview: {
+            select: { title: 'title' },
+          },
+        }),
+      ],
+      description: 'Expandable feature items shown below the CTA in the Caregiver Connected section.',
       hidden: ({ document }) => !document?.hasCaregiverApp,
     }),
 

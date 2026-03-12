@@ -69,8 +69,27 @@ const STATS = [
 
 export default function ProductStatsSection() {
   return (
-    <section style={{ background: '#fff', padding: '100px 0' }}>
-      <div style={{
+    <section className="stats-section" style={{ background: '#fff', padding: '100px 0' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .stats-section { padding: 60px 0 !important; }
+          .stats-grid {
+            grid-template-columns: 1fr !important;
+            padding: 0 16px !important;
+          }
+          .stats-left {
+            padding-right: 0 !important;
+            border-right: none !important;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 40px !important;
+          }
+          .stats-right {
+            padding-left: 0 !important;
+            padding-top: 40px !important;
+          }
+        }
+      `}</style>
+      <div className="stats-grid" style={{
         maxWidth: '1200px',
         margin: '0 auto',
         padding: '0 40px',
@@ -81,7 +100,7 @@ export default function ProductStatsSection() {
       }}>
 
         {/* ── Left column ── */}
-        <div style={{
+        <div className="stats-left" style={{
           paddingRight: '72px',
           borderRight: '1px solid #e0e0e0',
           display: 'flex',
@@ -166,7 +185,7 @@ export default function ProductStatsSection() {
         </div>
 
         {/* ── Right column ── */}
-        <div style={{
+        <div className="stats-right" style={{
           paddingLeft: '72px',
           display: 'flex',
           flexDirection: 'column',

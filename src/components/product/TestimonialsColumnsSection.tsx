@@ -103,7 +103,7 @@ export default function TestimonialsColumnsSection({ testimonials }: Props) {
   const col3 = cards.filter((_, i) => i % 3 === 2)
 
   return (
-    <section style={{ background: '#fff', padding: '100px 0' }}>
+    <section className="testimonials-section" style={{ background: '#fff', padding: '100px 0' }}>
       <style>{`
         @keyframes scrollUp {
           0% { transform: translateY(0); }
@@ -116,11 +116,27 @@ export default function TestimonialsColumnsSection({ testimonials }: Props) {
         @media (prefers-reduced-motion: reduce) {
           [data-scroll-col] { animation: none !important; }
         }
+        @media (max-width: 768px) {
+          .testimonials-section { padding: 60px 0 !important; }
+          .testimonials-inner { padding: 0 16px !important; }
+          .testimonials-cols {
+            grid-template-columns: 1fr !important;
+            height: 480px !important;
+          }
+          .testimonials-col-2, .testimonials-col-3 { display: none !important; }
+          .testimonials-header { margin-bottom: 36px !important; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .testimonials-cols {
+            grid-template-columns: 1fr 1fr !important;
+          }
+          .testimonials-col-3 { display: none !important; }
+        }
       `}</style>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
+      <div className="testimonials-inner" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+        <div className="testimonials-header" style={{ textAlign: 'center', marginBottom: '64px' }}>
           <span style={{
             fontSize: '11px',
             fontWeight: 600,
@@ -156,6 +172,7 @@ export default function TestimonialsColumnsSection({ testimonials }: Props) {
 
         {/* Columns */}
         <div
+          className="testimonials-cols"
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr 1fr',
@@ -167,8 +184,8 @@ export default function TestimonialsColumnsSection({ testimonials }: Props) {
           }}
         >
           <Column testimonials={col1} direction="up" duration={32} />
-          <Column testimonials={col2} direction="down" duration={38} />
-          <Column testimonials={col3} direction="up" duration={26} />
+          <div className="testimonials-col-2"><Column testimonials={col2} direction="down" duration={38} /></div>
+          <div className="testimonials-col-3"><Column testimonials={col3} direction="up" duration={26} /></div>
         </div>
       </div>
     </section>

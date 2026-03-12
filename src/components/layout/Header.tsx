@@ -156,7 +156,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
               href="tel:18884114656"
               className="hidden lg:flex items-center"
               style={{
-                gap: '8px',
+                gap: '6px',
                 textDecoration: 'none',
                 color: megaOpen ? '#333' : 'rgba(255,255,255,0.85)',
                 fontFamily: 'var(--font-instrument-sans), sans-serif',

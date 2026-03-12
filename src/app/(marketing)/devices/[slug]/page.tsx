@@ -94,8 +94,11 @@ export default async function DevicePage({ params }: Params) {
       videoUrl?: string
       videoThumbnail?: object
       hasCaregiverApp?: boolean
+      caregiverAppHeading?: string
+      caregiverAppDescription?: string
       caregiverAppBackgroundImage?: { asset?: { url?: string }; alt?: string }
       caregiverAppForegroundImage?: { asset?: { url?: string }; alt?: string }
+      caregiverAppFeatures?: Array<{ _key?: string; title?: string; body?: string }>
       variants?: Array<{
         _id: string
         name?: string
@@ -159,6 +162,9 @@ export default async function DevicePage({ params }: Params) {
           backgroundImage={device.caregiverAppBackgroundImage?.asset?.url}
           foregroundImage={device.caregiverAppForegroundImage?.asset?.url}
           foregroundImageAlt={device.caregiverAppForegroundImage?.alt}
+          heading={device.caregiverAppHeading}
+          description={device.caregiverAppDescription}
+          features={device.caregiverAppFeatures}
         />
       )}
       <WhatsInTheBoxSection accessories={device.accessories} productName={productName} />

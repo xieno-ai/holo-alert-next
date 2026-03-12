@@ -213,14 +213,22 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
   const [slideDir, setSlideDir] = useState<'forward' | 'back'>('forward')
   const [animating, setAnimating] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [isNarrow, setIsNarrow] = useState(false)
   const [resultsVisible, setResultsVisible] = useState(false)
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)')
+    const mqNarrow = window.matchMedia('(max-width: 400px)')
     setIsMobile(mq.matches)
+    setIsNarrow(mqNarrow.matches)
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    const narrowHandler = (e: MediaQueryListEvent) => setIsNarrow(e.matches)
     mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
+    mqNarrow.addEventListener('change', narrowHandler)
+    return () => {
+      mq.removeEventListener('change', handler)
+      mqNarrow.removeEventListener('change', narrowHandler)
+    }
   }, [])
 
   // Trigger results fade-in
@@ -394,8 +402,9 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
           fontFamily: font,
           minHeight: '100vh',
           background: 'linear-gradient(169deg, #111, #292929)',
-          paddingTop: '12px',
-          paddingBottom: '100px',
+          marginTop: '-108px',
+          paddingTop: '108px',
+          paddingBottom: isMobile ? '60px' : '100px',
           position: 'relative',
           overflow: 'hidden',
         }}
@@ -418,7 +427,7 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
           style={{
             maxWidth: '680px',
             margin: '0 auto',
-            padding: isMobile ? '60px 24px 40px' : '100px 40px 60px',
+            padding: isNarrow ? '48px 16px 32px' : isMobile ? '60px 24px 40px' : '100px 40px 60px',
             textAlign: 'center',
             position: 'relative',
           }}
@@ -442,7 +451,7 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
 
           <h1
             style={{
-              fontSize: isMobile ? '34px' : 'clamp(40px, 5vw, 56px)',
+              fontSize: isNarrow ? '28px' : isMobile ? '34px' : 'clamp(40px, 5vw, 56px)',
               fontWeight: 700,
               color: '#fff',
               margin: '0 0 20px',
@@ -536,8 +545,8 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
                 >
                   <div
                     style={{
-                      width: isMobile ? '72px' : '96px',
-                      height: isMobile ? '72px' : '96px',
+                      width: isNarrow ? '60px' : isMobile ? '72px' : '96px',
+                      height: isNarrow ? '60px' : isMobile ? '72px' : '96px',
                       background: 'rgba(255,255,255,0.06)',
                       borderRadius: '16px',
                       display: 'flex',
@@ -550,8 +559,8 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
                       <Image
                         src={imgSrc}
                         alt={device.name}
-                        width={isMobile ? 56 : 72}
-                        height={isMobile ? 56 : 72}
+                        width={isNarrow ? 44 : isMobile ? 56 : 72}
+                        height={isNarrow ? 44 : isMobile ? 56 : 72}
                         style={{ objectFit: 'contain', opacity: 0.85 }}
                       />
                     )}
@@ -587,14 +596,14 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
           background: '#fff',
           minHeight: '100vh',
           paddingTop: '12px',
-          paddingBottom: '100px',
+          paddingBottom: isMobile ? '60px' : '100px',
         }}
       >
         <div
           style={{
             maxWidth: '640px',
             margin: '0 auto',
-            padding: isMobile ? '0 20px' : '0 40px',
+            padding: isNarrow ? '0 16px' : isMobile ? '0 20px' : '0 40px',
           }}
         >
           {/* Progress area */}
@@ -689,7 +698,7 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
           >
             <h2
               style={{
-                fontSize: isMobile ? '24px' : '30px',
+                fontSize: isNarrow ? '21px' : isMobile ? '24px' : '30px',
                 fontWeight: 700,
                 color: '#171717',
                 margin: '0 0 36px',
@@ -709,13 +718,13 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
                     onClick={() => handleAnswer(option.id)}
                     style={{
                       width: '100%',
-                      padding: isMobile ? '18px 18px' : '20px 24px',
+                      padding: isNarrow ? '16px 14px' : isMobile ? '18px 18px' : '20px 24px',
                       background: isSelected ? '#eef6fc' : '#fff',
                       border: isSelected ? '2px solid #4294d8' : '1px solid #d9d9d9',
                       borderRadius: '14px',
                       cursor: 'pointer',
                       textAlign: 'left',
-                      fontSize: isMobile ? '15px' : '16px',
+                      fontSize: isNarrow ? '14px' : isMobile ? '15px' : '16px',
                       fontWeight: 500,
                       color: '#171717',
                       lineHeight: 1.4,
@@ -792,14 +801,14 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
         background: '#fff',
         minHeight: '100vh',
         paddingTop: '12px',
-        paddingBottom: '100px',
+        paddingBottom: isMobile ? '60px' : '100px',
       }}
     >
       <div
         style={{
           maxWidth: '960px',
           margin: '0 auto',
-          padding: isMobile ? '0 20px' : '0 40px',
+          padding: isNarrow ? '0 16px' : isMobile ? '0 20px' : '0 40px',
           opacity: resultsVisible ? 1 : 0,
           transform: resultsVisible ? 'translateY(0)' : 'translateY(16px)',
           transition: 'opacity 0.5s ease, transform 0.5s ease',
@@ -825,7 +834,7 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
           </span>
           <h1
             style={{
-              fontSize: isMobile ? '28px' : 'clamp(34px, 4vw, 46px)',
+              fontSize: isNarrow ? '24px' : isMobile ? '28px' : 'clamp(34px, 4vw, 46px)',
               fontWeight: 700,
               color: '#171717',
               margin: '0',
@@ -842,7 +851,7 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
           style={{
             background: '#fafafa',
             borderRadius: '24px',
-            padding: isMobile ? '32px 24px' : '48px 56px',
+            padding: isNarrow ? '24px 16px' : isMobile ? '32px 24px' : '48px 56px',
             marginBottom: '48px',
             border: '1px solid #f0f0f0',
           }}
@@ -861,13 +870,13 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
                 width: isMobile ? '100%' : '260px',
                 display: 'flex',
                 justifyContent: 'center',
-                marginBottom: isMobile ? '32px' : '0',
+                marginBottom: isMobile ? '24px' : '0',
               }}
             >
               <div
                 style={{
-                  width: '260px',
-                  height: '260px',
+                  width: isNarrow ? '180px' : isMobile ? '220px' : '260px',
+                  height: isNarrow ? '180px' : isMobile ? '220px' : '260px',
                   background: '#fff',
                   borderRadius: '20px',
                   display: 'flex',
@@ -882,7 +891,7 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
                     alt={winner.name}
                     width={220}
                     height={220}
-                    style={{ objectFit: 'contain', maxHeight: '220px', width: 'auto', height: 'auto' }}
+                    style={{ objectFit: 'contain', maxHeight: isNarrow ? '140px' : isMobile ? '180px' : '220px', width: 'auto', height: 'auto' }}
                   />
                 ) : (
                   <div
@@ -901,7 +910,7 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
             <div style={{ flex: 1 }}>
               <h2
                 style={{
-                  fontSize: isMobile ? '26px' : '30px',
+                  fontSize: isNarrow ? '22px' : isMobile ? '26px' : '30px',
                   fontWeight: 700,
                   color: '#171717',
                   margin: '0 0 6px',
@@ -968,8 +977,9 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
                   marginBottom: '28px',
                   border: '1px solid #f0f0f0',
                   display: 'inline-flex',
+                  flexWrap: 'wrap',
                   alignItems: 'baseline',
-                  gap: '8px',
+                  gap: isNarrow ? '4px 8px' : '8px',
                 }}
               >
                 <span
@@ -999,9 +1009,10 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
               <div
                 style={{
                   display: 'flex',
+                  flexDirection: isMobile ? 'column' : 'row',
                   flexWrap: 'wrap',
-                  alignItems: 'center',
-                  gap: '16px',
+                  alignItems: isMobile ? 'stretch' : 'center',
+                  gap: isMobile ? '12px' : '16px',
                 }}
               >
                 <Link
@@ -1010,12 +1021,13 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
+                    justifyContent: 'center',
                     gap: '8px',
                     background: '#4294d8',
                     color: '#fff',
                     fontWeight: 600,
                     fontSize: '15px',
-                    padding: '14px 32px',
+                    padding: isNarrow ? '14px 24px' : '14px 32px',
                     borderRadius: '100px',
                     textDecoration: 'none',
                     transition: 'background 0.15s, transform 0.1s',
@@ -1041,6 +1053,7 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
                     color: '#4294d8',
                     textDecoration: 'none',
                     fontWeight: 600,
+                    textAlign: isMobile ? 'center' : 'left',
                     transition: 'color 0.15s',
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = '#2f7abf')}
@@ -1109,10 +1122,10 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
                     style={{
                       border: '1px solid #e8e8e8',
                       borderRadius: '16px',
-                      padding: '24px',
+                      padding: isNarrow ? '16px' : '24px',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '20px',
+                      gap: isNarrow ? '14px' : '20px',
                       background: '#fff',
                       textDecoration: 'none',
                       transition: 'border-color 0.15s, box-shadow 0.15s',
@@ -1130,8 +1143,8 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
                       <div
                         style={{
                           flex: '0 0 auto',
-                          width: '80px',
-                          height: '80px',
+                          width: isNarrow ? '60px' : '80px',
+                          height: isNarrow ? '60px' : '80px',
                           background: '#fafafa',
                           borderRadius: '12px',
                           display: 'flex',

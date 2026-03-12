@@ -198,7 +198,7 @@ function StepIndicator({ step }: { step: 1 | 2 | 3 }) {
 function ContinueButton({ onClick, label, loading }: { onClick: () => void; label: string; loading?: boolean }) {
   return (
     <button type="button" onClick={onClick} disabled={loading}
-      style={{ marginTop: '36px', width: '100%', background: loading ? '#ccc' : '#f46036', color: '#fff', fontSize: '14px', fontWeight: 700, padding: '15px 24px', borderRadius: '10px', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', letterSpacing: '0.04em', textTransform: 'uppercase', transition: 'opacity 0.15s ease' }}
+      style={{ marginTop: '36px', width: '100%', background: loading ? '#ccc' : '#4294d8', color: '#fff', fontSize: '14px', fontWeight: 700, padding: '15px 24px', borderRadius: '10px', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', letterSpacing: '0.04em', textTransform: 'uppercase', transition: 'opacity 0.15s ease' }}
       onMouseEnter={(e) => { if (!loading) e.currentTarget.style.opacity = '0.9' }}
       onMouseLeave={(e) => { e.currentTarget.style.opacity = '1' }}>
       {loading ? 'Loading…' : label}
@@ -290,7 +290,7 @@ function PaymentForm({ totalDisplay, onBack }: { totalDisplay: string | null; on
         </div>
       )}
       <button type="submit" disabled={!stripe || loading}
-        style={{ marginTop: '24px', width: '100%', background: loading || !stripe ? '#ccc' : '#f46036', color: '#fff', fontSize: '14px', fontWeight: 700, padding: '15px 24px', borderRadius: '10px', border: 'none', cursor: loading || !stripe ? 'not-allowed' : 'pointer', letterSpacing: '0.04em', textTransform: 'uppercase', transition: 'background 0.15s ease' }}>
+        style={{ marginTop: '24px', width: '100%', background: loading || !stripe ? '#ccc' : '#4294d8', color: '#fff', fontSize: '14px', fontWeight: 700, padding: '15px 24px', borderRadius: '10px', border: 'none', cursor: loading || !stripe ? 'not-allowed' : 'pointer', letterSpacing: '0.04em', textTransform: 'uppercase', transition: 'background 0.15s ease' }}>
         {loading ? 'Processing…' : `Subscribe${totalDisplay ? ` — ${totalDisplay}` : ''}`}
       </button>
       <button type="button" onClick={onBack}

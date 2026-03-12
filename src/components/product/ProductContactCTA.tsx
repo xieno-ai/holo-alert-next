@@ -7,7 +7,14 @@ export default function ProductContactCTA({ productName }: Props) {
     ? `Question about ${productName} — Product Page`
     : 'Product Enquiry — Holo Alert'
   return (
-    <section style={{ background: '#f7f7f7', padding: '80px 40px', borderTop: '1px solid #ebebeb' }}>
+    <section className="contact-cta-section" style={{ background: '#f7f7f7', padding: '80px 40px', borderTop: '1px solid #ebebeb' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .contact-cta-section { padding: 48px 16px !important; }
+          .contact-cta-buttons { flex-direction: column !important; align-items: stretch !important; }
+          .contact-cta-buttons a { justify-content: center !important; }
+        }
+      `}</style>
       <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
 
         <span style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#4294d8', display: 'block', marginBottom: '12px' }}>
@@ -20,7 +27,7 @@ export default function ProductContactCTA({ productName }: Props) {
           Our friendly Canadian team is available to answer any questions and help you choose the right device.
         </p>
 
-        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div className="contact-cta-buttons" style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <a
             href="tel:18884450192"
             style={{

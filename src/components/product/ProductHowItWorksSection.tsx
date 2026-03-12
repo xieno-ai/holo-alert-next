@@ -9,10 +9,10 @@ const STEPS = [
   {
     label: 'Step One',
     title: 'Order Online',
-    body: 'Choose the device that\'s right for you and place your order in minutes.',
+    body: 'Pick your device and order in minutes — we handle the rest.',
     tag: 'Quick & Easy',
     illustration: (
-      <svg width="160" height="110" viewBox="0 0 160 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg style={{ width: '100%', height: '100%' }} viewBox="6 4 148 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         {/* Browser chrome */}
         <rect x="10" y="8" width="140" height="94" rx="8" fill="#f7f8fa" stroke="#e4e6ea" strokeWidth="1"/>
         <rect x="10" y="8" width="140" height="22" rx="8" fill="#edeef1" stroke="#e4e6ea" strokeWidth="1"/>
@@ -46,10 +46,10 @@ const STEPS = [
   {
     label: 'Step Two',
     title: 'We Set Everything Up',
-    body: 'We program and ship your device, ready to use right out of the box — no setup required.',
+    body: 'Your device arrives pre-programmed — open the box and it just works.',
     tag: 'Ready to Use',
     illustration: (
-      <svg width="160" height="110" viewBox="0 0 160 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg style={{ width: '100%', height: '100%' }} viewBox="34 18 98 82" fill="none" xmlns="http://www.w3.org/2000/svg">
         {/* Box body */}
         <rect x="40" y="38" width="80" height="58" rx="6" fill="#fff" stroke="#e4e6ea" strokeWidth="1.5"/>
         {/* Box lid left flap */}
@@ -73,10 +73,10 @@ const STEPS = [
   {
     label: 'Step Three',
     title: 'A Personal Welcome Call',
-    body: 'Once it arrives, our team calls to walk you through everything, run a quick test, and answer any questions.',
+    body: 'Our team walks you through setup, runs a quick test, and answers your questions.',
     tag: 'Personal Touch',
     illustration: (
-      <svg width="160" height="110" viewBox="0 0 160 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg style={{ width: '100%', height: '100%' }} viewBox="14 8 132 94" fill="none" xmlns="http://www.w3.org/2000/svg">
         {/* Phone body */}
         <rect x="52" y="12" width="56" height="86" rx="10" fill="#fff" stroke="#e4e6ea" strokeWidth="1.5"/>
         <rect x="52" y="12" width="56" height="86" rx="10" fill="url(#phoneGrad)" opacity="0.4"/>
@@ -111,10 +111,10 @@ const STEPS = [
   {
     label: 'Step Four',
     title: 'Stay Protected, Every Day',
-    body: 'That\'s it. Your loved one is connected to 24/7 monitoring and can get help anytime, anywhere.',
+    body: '24/7 monitoring means your loved one can get help anytime, anywhere.',
     tag: '24/7 Coverage',
     illustration: (
-      <svg width="160" height="110" viewBox="0 0 160 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg style={{ width: '100%', height: '100%' }} viewBox="10 4 140 98" fill="none" xmlns="http://www.w3.org/2000/svg">
         {/* Shield */}
         <path d="M80 10 L116 24 L116 52 C116 74 80 98 80 98 C80 98 44 74 44 52 L44 24 Z" fill="#f0f6fd" stroke="#4294d8" strokeWidth="1.5" strokeLinejoin="round"/>
         <path d="M80 18 L108 29 L108 52 C108 70 80 90 80 90 C80 90 52 70 52 52 L52 29 Z" fill="#4294d8" opacity="0.12"/>
@@ -136,11 +136,30 @@ const STEPS = [
 
 export default function ProductHowItWorksSection({ productName = 'Holo Pro' }: Props) {
   return (
-    <section style={{ background: '#fff', padding: '100px 40px' }}>
+    <section className="hiw-section" style={{ background: '#fff', padding: '100px 40px' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .hiw-section { padding: 60px 16px !important; }
+          .hiw-header { margin-bottom: 36px !important; }
+          .hiw-grid {
+            grid-template-columns: 1fr !important;
+            gap: 20px !important;
+          }
+          .hiw-arrow { display: none !important; }
+          .hiw-card { min-height: auto !important; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .hiw-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 16px !important;
+          }
+          .hiw-arrow { display: none !important; }
+        }
+      `}</style>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
 
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+        <div className="hiw-header" style={{ textAlign: 'center', marginBottom: '64px' }}>
           <span style={{
             fontSize: '11px',
             fontWeight: 600,
@@ -150,7 +169,7 @@ export default function ProductHowItWorksSection({ productName = 'Holo Pro' }: P
             display: 'block',
             marginBottom: '12px',
           }}>
-            Getting Started
+            How It Works
           </span>
           <h2 style={{
             fontSize: 'clamp(28px, 3vw, 44px)',
@@ -160,12 +179,12 @@ export default function ProductHowItWorksSection({ productName = 'Holo Pro' }: P
             margin: 0,
             letterSpacing: '-0.02em',
           }}>
-            How It Works
+            Setup? We Handle That.
           </h2>
         </div>
 
         {/* Cards row */}
-        <div style={{
+        <div className="hiw-grid" style={{
           display: 'grid',
           gridTemplateColumns: '1fr 32px 1fr 32px 1fr 32px 1fr',
           gap: '0',
@@ -175,6 +194,7 @@ export default function ProductHowItWorksSection({ productName = 'Holo Pro' }: P
             <React.Fragment key={step.label}>
               {/* Card */}
               <div
+                className="hiw-card"
                 style={{
                   background: '#f5f6f7',
                   borderRadius: '16px',
@@ -183,6 +203,7 @@ export default function ProductHowItWorksSection({ productName = 'Holo Pro' }: P
                   flexDirection: 'column',
                   gap: '0',
                   height: '100%',
+                  minHeight: '380px',
                 }}
               >
                 {/* Step label + title */}
@@ -210,21 +231,29 @@ export default function ProductHowItWorksSection({ productName = 'Holo Pro' }: P
                   </h3>
                 </div>
 
-                {/* Illustration panel */}
+                {/* Illustration panel — fixed height for uniformity */}
                 <div style={{
                   background: '#fff',
                   borderRadius: '10px',
-                  padding: '16px 12px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  flex: 1,
+                  height: '160px',
                   marginBottom: '16px',
                   boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-                  minHeight: '130px',
                   overflow: 'hidden',
+                  flexShrink: 0,
+                  padding: '20px',
                 }}>
-                  {step.illustration}
+                  <div style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    {step.illustration}
+                  </div>
                 </div>
 
                 {/* Body text */}
@@ -232,7 +261,8 @@ export default function ProductHowItWorksSection({ productName = 'Holo Pro' }: P
                   fontSize: '13px',
                   color: '#787878',
                   lineHeight: 1.6,
-                  margin: '0 0 16px',
+                  margin: '0 0 auto',
+                  paddingBottom: '16px',
                 }}>
                   {step.body}
                 </p>
@@ -259,6 +289,7 @@ export default function ProductHowItWorksSection({ productName = 'Holo Pro' }: P
               {i < STEPS.length - 1 && (
                 <div
                   key={`arrow-${i}`}
+                  className="hiw-arrow"
                   style={{
                     display: 'flex',
                     alignItems: 'center',

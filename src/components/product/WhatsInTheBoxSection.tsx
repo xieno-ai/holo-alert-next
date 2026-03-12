@@ -130,12 +130,8 @@ function BentoCard({ name, imgUrl, isHero, gridArea }: CardProps) {
 interface GridItem { name: string; imgUrl: string | null }
 
 function BentoGrid4({ items }: { items: GridItem[] }) {
-  // Layout:  col1 (hero, tall)   col2 (3 stacked: sq / rect / sq)
-  //  row1  [ hero              ] [ item1 (square)    ]
-  //  row2  [ hero              ] [ item2 (rectangle) ]
-  //  row3  [ hero              ] [ item3 (square)    ]
   return (
-    <div style={{
+    <div className="bento-grid-4" style={{
       display: 'grid',
       gridTemplateColumns: '1.4fr 1fr',
       gridTemplateRows: '210px 210px 210px',
@@ -151,11 +147,8 @@ function BentoGrid4({ items }: { items: GridItem[] }) {
 }
 
 function BentoGrid3({ items }: { items: GridItem[] }) {
-  // Layout:  col1      col2
-  //  row1  [ hero    side1 ]
-  //  row2  [ hero    side2 ]
   return (
-    <div style={{
+    <div className="bento-grid-3" style={{
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
       gridTemplateRows: '230px 230px',
@@ -172,7 +165,7 @@ function BentoGrid3({ items }: { items: GridItem[] }) {
 // Fallback for any other count — simple equal grid
 function BentoGridAny({ items }: { items: GridItem[] }) {
   return (
-    <div style={{
+    <div className="bento-grid-any" style={{
       display: 'grid',
       gridTemplateColumns: `repeat(${Math.min(items.length, 4)}, 1fr)`,
       gap: '12px',
@@ -185,6 +178,33 @@ function BentoGridAny({ items }: { items: GridItem[] }) {
 }
 
 // ── Section ───────────────────────────────────────────────────────────────────
+
+const bentoResponsiveStyles = `
+  @media (max-width: 768px) {
+    .witb-section { padding: 60px 0 !important; }
+    .witb-inner { padding: 0 16px !important; }
+    .bento-grid-4 {
+      grid-template-columns: 1fr !important;
+      grid-template-rows: 280px repeat(3, 180px) !important;
+      grid-template-areas: "hero" "side1" "side2" "side3" !important;
+    }
+    .bento-grid-3 {
+      grid-template-columns: 1fr !important;
+      grid-template-rows: 280px repeat(2, 180px) !important;
+      grid-template-areas: "hero" "side1" "side2" !important;
+    }
+    .bento-grid-any {
+      grid-template-columns: 1fr 1fr !important;
+    }
+  }
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .bento-grid-4 {
+      grid-template-columns: 1fr 1fr !important;
+      grid-template-rows: 240px 240px !important;
+      grid-template-areas: "hero side1" "hero side2" !important;
+    }
+  }
+`
 
 export default function WhatsInTheBoxSection({ accessories, productName = 'Holo Pro' }: Props) {
   // Resolve items list
@@ -201,8 +221,9 @@ export default function WhatsInTheBoxSection({ accessories, productName = 'Holo 
   }
 
   return (
-    <section style={{ background: '#fff', padding: '100px 0' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
+    <section className="witb-section" style={{ background: '#fff', padding: '100px 0' }}>
+      <style>{bentoResponsiveStyles}</style>
+      <div className="witb-inner" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '56px' }}>

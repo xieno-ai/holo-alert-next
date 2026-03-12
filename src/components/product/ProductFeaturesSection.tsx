@@ -13,6 +13,9 @@ interface Feature {
     alt?: string
     [key: string]: unknown
   }
+  video?: {
+    asset?: { url?: string }
+  }
 }
 
 interface Props {
@@ -70,9 +73,10 @@ export default function ProductFeaturesSection({ features, productName = 'Holo P
     const handleScroll = () => {
       if (!trackRef.current) return
       const rect = trackRef.current.getBoundingClientRect()
-      // rect.top: 0 when section top hits viewport top, goes negative as we scroll down
-      const progress = -rect.top / window.innerHeight
-      const index = Math.min(Math.max(Math.floor(progress), 0), count - 1)
+      const totalScroll = rect.height - window.innerHeight
+      const scrolled = -rect.top
+      const progress = scrolled / totalScroll
+      const index = Math.min(Math.max(Math.floor(progress * count), 0), count - 1)
       setActiveIndex(index)
     }
 
@@ -84,12 +88,38 @@ export default function ProductFeaturesSection({ features, productName = 'Holo P
   if (!features || features.length === 0) return null
 
   const activeFeature = features[activeIndex]
+  const hasVideo = activeFeature?.video?.asset?.url
   const hasImage = activeFeature?.image?.asset
 
   return (
     // Scroll track — N viewport heights tall; the sticky child "captures" each one
-    <div ref={trackRef} style={{ height: `${count * 100}vh` }}>
+    <div ref={trackRef} className="features-scroll-track" style={{ height: `${(count + 1) * 100}vh` }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .features-scroll-track { height: auto !important; }
+          .features-sticky-section {
+            position: relative !important;
+            height: auto !important;
+            padding: 60px 0 40px !important;
+          }
+          .features-grid {
+            grid-template-columns: 1fr !important;
+            gap: 32px !important;
+            padding: 0 16px !important;
+          }
+          .features-image-panel {
+            height: 300px !important;
+            order: -1;
+          }
+          .features-header { margin-bottom: 28px !important; }
+        }
+        @media (max-width: 480px) {
+          .features-grid { padding: 0 12px !important; }
+          .features-image-panel { height: 240px !important; }
+        }
+      `}</style>
       <section
+        className="features-sticky-section"
         style={{
           position: 'sticky',
           top: 0,
@@ -97,11 +127,11 @@ export default function ProductFeaturesSection({ features, productName = 'Holo P
           overflow: 'hidden',
           background: '#ffffff',
           display: 'flex',
-          alignItems: 'flex-start',
-          paddingTop: 'clamp(80px, 10vh, 120px)',
+          alignItems: 'center',
         }}
       >
         <div
+          className="features-grid"
           style={{
             maxWidth: '1200px',
             margin: '0 auto',
@@ -116,7 +146,7 @@ export default function ProductFeaturesSection({ features, productName = 'Holo P
           {/* ── LEFT: Feature list ── */}
           <div>
             {/* Header */}
-            <div style={{ marginBottom: '48px' }}>
+            <div className="features-header" style={{ marginBottom: '48px' }}>
               <span
                 style={{
                   fontSize: '11px',
@@ -246,18 +276,53 @@ export default function ProductFeaturesSection({ features, productName = 'Holo P
 
           {/* ── RIGHT: Image panel ── */}
           <div
+            className="features-image-panel"
             style={{
               height: '520px',
               borderRadius: '20px',
               overflow: 'hidden',
               position: 'relative',
               background: '#1a1a1a',
+              cursor: hasVideo ? 'pointer' : undefined,
             }}
+            onMouseEnter={hasVideo ? () => {
+              const vid = trackRef.current?.querySelector<HTMLVideoElement>('.features-image-panel video')
+              if (vid?.ended) {
+                vid.currentTime = 0
+                vid.play()
+                vid.dataset.hoverReplay = 'true'
+              }
+            } : undefined}
+            onMouseLeave={hasVideo ? () => {
+              const vid = trackRef.current?.querySelector<HTMLVideoElement>('.features-image-panel video')
+              if (vid && vid.dataset.hoverReplay === 'true') {
+                const onEnd = () => {
+                  vid.removeEventListener('ended', onEnd)
+                  vid.dataset.hoverReplay = ''
+                }
+                vid.addEventListener('ended', onEnd)
+              }
+            } : undefined}
           >
-            {hasImage ? (
+            {hasVideo ? (
+              <video
+                key={`video-${activeFeature._key ?? activeIndex}`}
+                src={activeFeature.video!.asset!.url!}
+                autoPlay
+                muted
+                playsInline
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+            ) : hasImage ? (
               <Image
                 key={activeFeature._key ?? activeIndex}
-                src={urlFor(activeFeature.image!).width(800).height(600).fit('crop').auto('format').url()}
+                src={urlFor(activeFeature.image!).width(1200).auto('format').quality(85).url()}
                 alt={(activeFeature.image?.alt as string) ?? activeFeature.title ?? ''}
                 fill
                 style={{ objectFit: 'cover' }}
