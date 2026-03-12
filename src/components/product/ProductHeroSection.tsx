@@ -402,7 +402,7 @@ export default function ProductHeroSection({ device, addons = [], variants = [] 
           </div>
 
           {/* Pricing options */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
+          <div id="plans" style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px', scrollMarginTop: '80px' }}>
 
             {/* Annual — highlighted */}
             <button

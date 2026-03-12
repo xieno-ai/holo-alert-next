@@ -451,7 +451,7 @@ export default function EmergencyContactsForm() {
               disabled={status === 'submitting'}
               className="inline-flex items-center justify-center gap-2 font-semibold text-white text-[15px] rounded-lg cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               style={{
-                background: '#f46036',
+                background: '#4294d8',
                 padding: '15px 40px',
                 letterSpacing: '0.02em',
                 transition: 'opacity 0.15s ease, transform 0.1s ease',

@@ -13,6 +13,7 @@ import ProductFAQSection from '@/components/product/ProductFAQSection'
 import ProductContactCTA from '@/components/product/ProductContactCTA'
 import ProductAmbientVideoSection from '@/components/product/ProductAmbientVideoSection'
 import TestimonialsColumnsSection from '@/components/product/TestimonialsColumnsSection'
+import OtherDevicesSection from '@/components/product/OtherDevicesSection'
 
 interface Params {
   params: Promise<{ slug: string }>
@@ -67,6 +68,17 @@ export default async function DevicePage({ params }: Params) {
 
   let device = null
   let addons: AddonData[] = []
+  let allDevices: Array<{
+    _id: string
+    name: string
+    slug: { current: string }
+    tagline?: string
+    pricingCardImage?: object
+    pricingCardSubhead?: string
+    pricingCardSubscription?: string
+    monthlyPriceDisplay?: string
+    pricingCardBenefits?: string[]
+  }> = []
 
   try {
     device = await sanityFetch<{
@@ -141,6 +153,15 @@ export default async function DevicePage({ params }: Params) {
     // addons are optional — degrade gracefully
   }
 
+  try {
+    allDevices = await sanityFetch<typeof allDevices>({
+      query: DEVICES_QUERY,
+      tags: ['device'],
+    }) ?? []
+  } catch {
+    // other devices section is optional
+  }
+
   const productName = device.name ?? 'Holo Pro'
 
   return (
@@ -169,6 +190,7 @@ export default async function DevicePage({ params }: Params) {
       )}
       <WhatsInTheBoxSection accessories={device.accessories} productName={productName} />
       <ProductFAQSection productName={productName} />
+      <OtherDevicesSection devices={allDevices} currentSlug={slug} />
       <ProductContactCTA productName={productName} />
     </>
   )

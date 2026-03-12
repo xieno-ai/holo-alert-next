@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (stripe.invoiceItems as any).create({
         customer: customer.id,
-        price: deviceFeePriceId,
+        pricing: { price: deviceFeePriceId },
       })
     }
 
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
     const invoiceRes = await fetch(`https://api.stripe.com/v1/invoices/${invoiceId}`, {
       headers: { 'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}` },
     })
-    const invoiceData = await invoiceRes.json() as { payment_intent?: string }
+    const invoiceData = await invoiceRes.json() as { payment_intent?: string; amount_due?: number; currency?: string }
     const piId = invoiceData.payment_intent
 
     if (!piId) {
@@ -90,9 +90,15 @@ export async function POST(request: Request) {
       )
     }
 
+    // amount_due is in cents
+    const amountDue = invoiceData.amount_due ?? pi.amount
+    const currency = invoiceData.currency ?? 'cad'
+
     return NextResponse.json({
       clientSecret: pi.client_secret,
       subscriptionId: subscription.id,
+      amountDue,
+      currency,
     })
   } catch (err) {
     const raw = err instanceof Error ? err.message : 'Unknown error'

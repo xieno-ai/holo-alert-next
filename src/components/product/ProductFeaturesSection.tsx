@@ -364,7 +364,7 @@ export default function ProductFeaturesSection({ features, productName = 'Holo P
                 {activeFeature?.title}
               </span>
               <a
-                href="#order"
+                href="#plans"
                 style={{
                   display: 'flex',
                   alignItems: 'center',

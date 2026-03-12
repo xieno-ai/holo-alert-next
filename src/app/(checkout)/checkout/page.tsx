@@ -123,6 +123,7 @@ export default async function CheckoutPage({
     ? `${fmt(serviceAmount + addonTotal)}${interval}`
     : null
 
+
   const orderSummary = {
     deviceName: device.name ?? 'Holo Alert',
     deviceSlug: slug,

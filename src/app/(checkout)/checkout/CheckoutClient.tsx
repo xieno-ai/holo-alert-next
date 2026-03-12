@@ -206,7 +206,7 @@ function ContinueButton({ onClick, label, loading }: { onClick: () => void; labe
   )
 }
 
-function OrderSidebar({ summary }: { summary: OrderSummary }) {
+function OrderSidebar({ summary, stripeDueToday, showDueToday }: { summary: OrderSummary; stripeDueToday: string | null; showDueToday: boolean }) {
   return (
     <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #ebebeb', overflow: 'hidden' }}>
       <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #f0f0f0' }}>
@@ -243,10 +243,16 @@ function OrderSidebar({ summary }: { summary: OrderSummary }) {
             <span style={{ fontSize: '12px', fontWeight: 600, color: '#45b864' }}>+{summary.bonusMonths} months free</span>
           </div>
         )}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', paddingBottom: showDueToday && stripeDueToday ? '14px' : '0', borderBottom: showDueToday && stripeDueToday ? '1px solid #f5f5f5' : 'none' }}>
           <span style={{ fontSize: '14px', fontWeight: 700, color: '#171717' }}>Billed {summary.plan === 'annual' ? 'annually' : 'monthly'}</span>
           <span style={{ fontSize: '15px', fontWeight: 800, color: '#4294d8' }}>{summary.totalDisplay ?? summary.servicePrice}</span>
         </div>
+        {showDueToday && stripeDueToday && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '14px' }}>
+            <span style={{ fontSize: '14px', fontWeight: 700, color: '#171717' }}>Due today</span>
+            <span style={{ fontSize: '15px', fontWeight: 800, color: '#171717' }}>{stripeDueToday}</span>
+          </div>
+        )}
       </div>
       <div style={{ padding: '16px 24px', background: '#f9fafb', borderTop: '1px solid #f0f0f0' }}>
         {['30-day satisfaction guarantee', 'Cancel or pause anytime', 'Secure checkout by Stripe'].map((text) => (
@@ -309,6 +315,7 @@ export default function CheckoutClient({ orderSummary, pricePayload }: Props) {
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({})
   const [apiError, setApiError] = useState<string | null>(null)
   const [clientSecret, setClientSecret] = useState<string | null>(null)
+  const [stripeDueToday, setStripeDueToday] = useState<string | null>(null)
   const [sessionLoading, setSessionLoading] = useState(false)
 
   function update(field: keyof FormState, value: string | boolean) {
@@ -360,6 +367,11 @@ export default function CheckoutClient({ orderSummary, pricePayload }: Props) {
       const data = await res.json()
       if (!res.ok || data.error) throw new Error(data.error ?? 'Failed to start checkout.')
       setClientSecret(data.clientSecret)
+      // Format Stripe amount (cents) to display string
+      if (data.amountDue != null) {
+        const dollars = (data.amountDue / 100).toFixed(2)
+        setStripeDueToday(`$${dollars}`)
+      }
       setStep(3)
     } catch (err) {
       setApiError(err instanceof Error ? err.message : 'Failed to start checkout.')
@@ -401,7 +413,7 @@ export default function CheckoutClient({ orderSummary, pricePayload }: Props) {
 
         {/* Left: order summary */}
         <div style={{ position: 'sticky', top: '24px' }}>
-          <OrderSidebar summary={orderSummary} />
+          <OrderSidebar summary={orderSummary} stripeDueToday={stripeDueToday} showDueToday={step === 3} />
         </div>
 
         {/* Right: steps */}
