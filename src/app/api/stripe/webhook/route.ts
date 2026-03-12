@@ -177,11 +177,17 @@ export async function POST(request: Request) {
         meta.phone,
       )
 
-      // Build line items from subscription items
-      const ssItems: { name: string; quantity: number; unitPrice: number; sku?: string }[] = []
+      // Always include the physical device as the primary ShipStation line item
+      const deviceName = meta.device_name ?? 'Holo Alert Device'
+      const ssItems: { name: string; quantity: number; unitPrice: number; sku?: string }[] = [
+        { name: deviceName, quantity: 1, unitPrice: 0 },
+      ]
 
-      // Get invoice to extract line item pricing
+      // Get invoice to extract total paid and check for a device fee line item
       const ssInvoiceId = (event.data.object as unknown as { id?: string }).id
+      let amountPaid = 0
+      let taxAmount = 0
+
       if (ssInvoiceId) {
         const ssInvoiceRes = await fetch(
           `https://api.stripe.com/v1/invoices/${ssInvoiceId}?expand[]=lines.data`,
@@ -190,28 +196,32 @@ export async function POST(request: Request) {
         const ssInvoiceData = await ssInvoiceRes.json() as {
           total?: number
           tax?: number
-          lines?: { data: { description?: string; amount?: number; quantity?: number }[] }
+          lines?: { data: { description?: string; amount?: number; quantity?: number; price?: { type?: string } }[] }
         }
 
+        amountPaid = (ssInvoiceData.total ?? 0) / 100
+        taxAmount = (ssInvoiceData.tax ?? 0) / 100
+
+        // If there's a one-time device fee on the invoice (monthly plans),
+        // update the device line item price
         for (const line of ssInvoiceData.lines?.data ?? []) {
-          ssItems.push({
-            name: line.description ?? meta.device_name ?? 'Holo Alert Device',
-            quantity: line.quantity ?? 1,
-            unitPrice: (line.amount ?? 0) / 100,
-          })
+          const isOneTime = !line.price?.type || line.price.type === 'one_time'
+          if (isOneTime && (line.amount ?? 0) > 0) {
+            ssItems[0].unitPrice = (line.amount ?? 0) / 100
+          }
         }
-
-        const result = await createShipStationOrder({
-          orderNumber: subscriptionId.slice(-12),
-          customerEmail: customer.email ?? '',
-          shipTo,
-          items: ssItems,
-          amountPaid: (ssInvoiceData.total ?? 0) / 100,
-          taxAmount: (ssInvoiceData.tax ?? 0) / 100,
-        })
-
-        console.log(`[webhook] ShipStation order created: #${result.orderNumber} (shipmentId: ${result.shipmentId})`)
       }
+
+      const result = await createShipStationOrder({
+        orderNumber: subscriptionId.slice(-12),
+        customerEmail: customer.email ?? '',
+        shipTo,
+        items: ssItems,
+        amountPaid,
+        taxAmount,
+      })
+
+      console.log(`[webhook] ShipStation order created: #${result.orderNumber} (shipmentId: ${result.shipmentId})`)
     } catch (ssErr) {
       // ShipStation failure should not break the webhook — log and continue
       console.error('[webhook] Failed to create ShipStation order:', ssErr)
