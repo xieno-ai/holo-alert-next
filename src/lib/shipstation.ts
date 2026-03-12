@@ -87,6 +87,25 @@ function mapCountryCode(country: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// Device name → ShipStation SKU mapping
+// ---------------------------------------------------------------------------
+
+const DEVICE_SKU_MAP: Record<string, string> = {
+  'holo mini': 'HA-MD-BW',
+  'holo pro': 'HA-MD-BX',
+  'holo active': 'HA-MD-STRIDE',
+  'holo mini-r': 'HA-MD-BWR',
+  'holo pro-r': 'HA-MD-BXR',
+  'holo smart watch': 'HA-MD-SW200i',
+  'holo smart watch mini': 'HA-MD-SW300V',
+}
+
+/** Look up the ShipStation SKU for a device name from Sanity */
+export function getDeviceSku(deviceName: string): string | undefined {
+  return DEVICE_SKU_MAP[deviceName.toLowerCase().trim()]
+}
+
+// ---------------------------------------------------------------------------
 // Order creation via V2 shipments endpoint
 // ---------------------------------------------------------------------------
 

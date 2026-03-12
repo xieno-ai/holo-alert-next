@@ -1,7 +1,7 @@
 import Stripe from 'stripe'
 import { NextResponse } from 'next/server'
 import { sendOrderConfirmationEmail, type OrderEmailData } from '@/lib/email'
-import { createShipStationOrder, parseShippingAddress } from '@/lib/shipstation'
+import { createShipStationOrder, parseShippingAddress, getDeviceSku } from '@/lib/shipstation'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
@@ -179,8 +179,9 @@ export async function POST(request: Request) {
 
       // Always include the physical device as the primary ShipStation line item
       const deviceName = meta.device_name ?? 'Holo Alert Device'
+      const deviceSku = getDeviceSku(deviceName)
       const ssItems: { name: string; quantity: number; unitPrice: number; sku?: string }[] = [
-        { name: deviceName, quantity: 1, unitPrice: 0 },
+        { name: deviceName, quantity: 1, unitPrice: 0, sku: deviceSku },
       ]
 
       // Get invoice to extract total paid and check for a device fee line item
