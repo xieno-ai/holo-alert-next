@@ -6,12 +6,12 @@ interface Props {
 
 export default function WhyChooseSection({ imageUrl }: Props) {
   return (
-    <section style={{ background: '#fff', padding: '0 40px' }}>
+    <section className="px-4 sm:px-6 lg:px-10" style={{ background: '#fff' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2">
 
           {/* Top-left: tag + heading */}
-          <div style={{ padding: '72px 56px 56px 0', borderRight: '1px solid #e0e0e0', borderBottom: '1px solid #e0e0e0' }}>
+          <div className="py-12 lg:py-[72px] lg:pr-14 lg:border-r lg:border-b" style={{ borderColor: '#e0e0e0' }}>
             <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#4294d8', marginBottom: '18px' }}>
               Seniors Care
             </div>
@@ -21,7 +21,7 @@ export default function WhyChooseSection({ imageUrl }: Props) {
           </div>
 
           {/* Top-right: image */}
-          <div style={{ borderBottom: '1px solid #e0e0e0', padding: '40px 0 40px 48px' }}>
+          <div className="pb-10 lg:py-10 lg:pl-12 lg:border-b" style={{ borderColor: '#e0e0e0' }}>
             <Image
               src={imageUrl ?? '/images/with-grandchildren.webp'}
               alt="Canadian senior with family"
@@ -32,7 +32,7 @@ export default function WhyChooseSection({ imageUrl }: Props) {
           </div>
 
           {/* Bottom-left: stat */}
-          <div style={{ padding: '56px 56px 72px 0', borderRight: '1px solid #e0e0e0' }}>
+          <div className="py-12 lg:py-14 lg:pr-14 lg:border-r" style={{ borderColor: '#e0e0e0' }}>
             <div style={{ fontSize: 'clamp(72px, 8vw, 120px)', fontWeight: 700, color: '#4294d8', lineHeight: 1, marginBottom: '14px' }}>
               1000+
             </div>
@@ -42,7 +42,7 @@ export default function WhyChooseSection({ imageUrl }: Props) {
           </div>
 
           {/* Bottom-right: body text */}
-          <div style={{ padding: '56px 0 72px 56px' }}>
+          <div className="pb-12 lg:py-14 lg:pl-14">
             <p style={{ fontSize: '15px', color: '#555', lineHeight: 1.75, margin: '0 0 16px' }}>
               Medical alert systems designed specifically for Canadian seniors provide coast-to-coast coverage across all Canadian provinces. Our cellular medical alert technology requires no landline, giving you freedom to stay protected at home or anywhere you go,
             </p>

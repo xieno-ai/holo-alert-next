@@ -121,7 +121,7 @@ export default function LegalPageClient({ data, breadcrumb }: Props) {
           {/* Breadcrumb */}
           <nav
             className="flex items-center gap-2 text-[13px] text-[#787878]"
-            style={{ paddingTop: '88px', paddingBottom: '20px' }}
+            style={{ paddingTop: '16px', paddingBottom: '20px' }}
           >
             <Link href="/" className="hover:text-[#171717] transition-colors">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-label="Home">

@@ -173,7 +173,7 @@ export default function TestimonialsPageClient({ testimonials }: Props) {
   return (
     <>
       {/* Page wrapper — pushes below fixed header */}
-      <div style={{ paddingTop: '120px', background: '#f5f6f7', minHeight: '100vh' }}>
+      <div style={{ paddingTop: '12px', background: '#f5f6f7', minHeight: '100vh' }}>
 
         {/* ── Section header ── */}
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 40px 56px' }}>

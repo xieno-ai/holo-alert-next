@@ -372,7 +372,7 @@ export default function CompareClient({ devices }: { devices: Device[] }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          paddingTop: '120px',
+          paddingTop: '12px',
           fontFamily: 'Instrument Sans, sans-serif',
           color: '#787878',
         }}
@@ -388,7 +388,7 @@ export default function CompareClient({ devices }: { devices: Device[] }) {
         fontFamily: 'Instrument Sans, sans-serif',
         background: '#fff',
         minHeight: '100vh',
-        paddingTop: '120px',
+        paddingTop: '12px',
         paddingBottom: '100px',
       }}
     >

@@ -178,7 +178,7 @@ export default function ReferralPageClient() {
         style={{
           position: 'relative',
           minHeight: '480px',
-          paddingTop: '108px',
+          paddingTop: '0',
           display: 'flex',
           alignItems: 'flex-end',
           overflow: 'hidden',

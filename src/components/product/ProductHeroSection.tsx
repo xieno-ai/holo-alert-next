@@ -196,7 +196,7 @@ export default function ProductHeroSection({ device, addons = [], variants = [] 
   const slug = activeVariant.slug?.current ?? 'holo-pro'
 
   return (
-    <section style={{ background: '#fff', padding: '120px 40px 40px' }}>
+    <section style={{ background: '#fff', padding: '12px 40px 40px' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'start' }}>
 
         {/* LEFT: Image gallery */}
@@ -224,6 +224,7 @@ export default function ProductHeroSection({ device, addons = [], variants = [] 
                   objectFit: activeIdx === 0 ? 'contain' : 'cover',
                   padding: activeIdx === 0 ? '48px' : '0',
                 }}
+                sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
             ) : (

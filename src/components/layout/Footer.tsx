@@ -72,10 +72,10 @@ export default function Footer() {
       <div className="mx-auto px-4 sm:px-6 lg:px-8 py-16" style={{ maxWidth: 'var(--max-w-container)' }}>
 
         {/* Top section: Logo + tagline + social | Four link columns */}
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:grid-cols-5">
 
-          {/* Brand column — takes 2 of 5 columns on large screens */}
-          <div className="lg:col-span-2">
+          {/* Brand column — takes full width on tablet, 2 of 5 on large screens */}
+          <div className="md:col-span-2 lg:col-span-2">
             <Link href="/" className="inline-block mb-4">
               <Image
                 src="/images/HoloFooterLogo.svg"
@@ -91,10 +91,10 @@ export default function Footer() {
             {/* Contact info */}
             <div className="space-y-1 mb-6">
               <a
-                href="tel:18884450192"
+                href="tel:18884114656"
                 className="block text-sm text-white/80 hover:text-white transition-colors font-medium"
               >
-                1-888-445-0192
+                1-888-411-4656
               </a>
               <a
                 href="mailto:support@holoalert.ca"
@@ -125,12 +125,12 @@ export default function Footer() {
             <h3 className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-4">
               Products
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-1">
               {productLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/60 hover:text-white transition-colors"
+                    className="text-sm text-white/60 hover:text-white transition-colors py-1.5 inline-block"
                   >
                     {link.label}
                   </Link>
@@ -144,12 +144,12 @@ export default function Footer() {
             <h3 className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-4">
               Programs
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-1">
               {programLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/60 hover:text-white transition-colors"
+                    className="text-sm text-white/60 hover:text-white transition-colors py-1.5 inline-block"
                   >
                     {link.label}
                   </Link>
@@ -163,12 +163,12 @@ export default function Footer() {
             <h3 className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-4">
               Company
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-1">
               {companyLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/60 hover:text-white transition-colors"
+                    className="text-sm text-white/60 hover:text-white transition-colors py-1.5 inline-block"
                   >
                     {link.label}
                   </Link>

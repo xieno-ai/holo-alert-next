@@ -50,7 +50,8 @@ export default function BridgeSection() {
     <section
       ref={sectionRef}
       id="bridge-section"
-      style={{ background: '#fff', padding: '100px 40px', borderTop: '1px solid #f0f0f0' }}
+      className="px-4 sm:px-6 lg:px-10"
+      style={{ background: '#fff', paddingTop: '100px', paddingBottom: '100px', borderTop: '1px solid #f0f0f0' }}
     >
       <div style={{ maxWidth: '800px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>

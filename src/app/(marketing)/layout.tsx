@@ -13,6 +13,8 @@ export default function MarketingLayout({
         <PromoBannerServer />
         <HeaderServer />
       </div>
+      {/* Single source of truth for fixed-header offset */}
+      <div className="h-[108px]" />
       <main>{children}</main>
       <Footer />
     </>

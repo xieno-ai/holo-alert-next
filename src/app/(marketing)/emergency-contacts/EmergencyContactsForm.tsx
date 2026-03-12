@@ -206,7 +206,7 @@ export default function EmergencyContactsForm() {
   /* ─── Success state ─── */
   if (status === 'success') {
     return (
-      <div className="min-h-screen bg-white" style={{ paddingTop: '140px' }}>
+      <div className="min-h-screen bg-white" style={{ paddingTop: '32px' }}>
         <div
           className="mx-auto px-6 py-20 text-center"
           style={{
@@ -249,7 +249,7 @@ export default function EmergencyContactsForm() {
 
   /* ─── Form state ─── */
   return (
-    <div className="min-h-screen bg-white" style={{ paddingTop: '140px' }}>
+    <div className="min-h-screen bg-white" style={{ paddingTop: '32px' }}>
       {/* Page header */}
       <section style={{ background: '#f2f2f2' }}>
         <div

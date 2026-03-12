@@ -51,7 +51,7 @@ export default async function DeviceCardsSection() {
   )
 
   return (
-    <section id="products" style={{ background: '#f0f0f0', padding: '80px 40px' }}>
+    <section id="products" className="px-4 sm:px-6 lg:px-10" style={{ background: '#f0f0f0', paddingTop: '80px', paddingBottom: '80px' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
 
         <div style={{ textAlign: 'center', marginBottom: '52px' }}>
@@ -63,7 +63,7 @@ export default async function DeviceCardsSection() {
           </h2>
         </div>
 
-        <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-stretch lg:items-center">
           {devices.map((device, i) => {
             const isFeatured = i === featuredIndex
             const cardStyle: React.CSSProperties = {
@@ -76,7 +76,6 @@ export default async function DeviceCardsSection() {
               boxShadow: isFeatured
                 ? '0 8px 32px rgba(0,0,0,0.13), 0 24px 64px rgba(0,0,0,0.1)'
                 : '0 1px 3px rgba(0,0,0,0.06), 0 6px 24px rgba(0,0,0,0.07)',
-              transform: isFeatured ? 'scale(1.05)' : 'none',
               zIndex: isFeatured ? 2 : 1,
               position: 'relative',
               borderTop: isFeatured ? '3px solid #4294d8' : 'none',
@@ -88,7 +87,7 @@ export default async function DeviceCardsSection() {
               : null
 
             return (
-              <div key={device._id} style={cardStyle}>
+              <div key={device._id} style={cardStyle} className={isFeatured ? 'lg:scale-105' : ''}>
                 {isFeatured && (
                   <div style={{ textAlign: 'center', marginBottom: '8px' }}>
                     <span style={{ display: 'inline-block', background: '#4294d8', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '4px 12px', borderRadius: '100px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
@@ -114,6 +113,7 @@ export default async function DeviceCardsSection() {
                       width={400}
                       height={400}
                       style={{ maxHeight: '210px', objectFit: 'contain', width: 'auto', height: 'auto' }}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       loading="lazy"
                     />
                   ) : (

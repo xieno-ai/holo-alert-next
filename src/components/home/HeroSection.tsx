@@ -19,7 +19,7 @@ export default function HeroSection({
 }: Props) {
   return (
     <AuroraBackground
-      className="!h-auto bg-white pt-[108px] overflow-hidden"
+      className="!h-auto bg-white overflow-hidden -mt-[108px] pt-[108px]"
       showRadialGradient={true}
     >
       {/* Decorative curved diagonal line — behind cards, fades at both ends */}
@@ -52,7 +52,7 @@ export default function HeroSection({
         style={{ maxWidth: '1280px' }}
       >
         {/* === Main composition container === */}
-        <div className="relative min-h-[600px] lg:h-[700px] xl:h-[750px] flex flex-col lg:block py-10 lg:py-16">
+        <div className="relative min-h-0 sm:min-h-[600px] lg:h-[700px] xl:h-[750px] flex flex-col lg:block py-10 lg:py-16">
           {/* ── TOP-LEFT: Eyebrow + Heading (overlaps center card) ── */}
           <div className="relative z-30 lg:absolute lg:top-[72px] lg:left-0 mb-8 lg:mb-0">
             <p
@@ -98,6 +98,7 @@ export default function HeroSection({
                   height={520}
                   className="w-full max-w-[340px] h-auto object-contain relative z-10"
                   style={{ filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.20))' }}
+                  sizes="(max-width: 768px) 90vw, 460px"
                   priority
                 />
               </div>

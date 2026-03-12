@@ -34,7 +34,7 @@ export default function AccessoriesClient() {
   return (
     <>
       {/* Page shell — white bg, full height */}
-      <div style={{ background: '#fff', minHeight: '100vh', paddingTop: '108px' }}>
+      <div style={{ background: '#fff', minHeight: '100vh' }}>
         {/* Max-width container */}
         <div
           className="acc-wrap"
@@ -43,7 +43,7 @@ export default function AccessoriesClient() {
             margin: '0 auto',
             padding: '0 40px',
             display: 'flex',
-            minHeight: 'calc(100vh - 108px)',
+            minHeight: 'calc(100vh - 108px)', /* accounts for layout spacer */
           }}
         >
         {/* ── Left: copy + form ── */}

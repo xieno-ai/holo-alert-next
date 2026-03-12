@@ -16,6 +16,15 @@ export const metadata: Metadata = {
     icon: '/images/favicon.png',
     apple: '/images/webclip.png',
   },
+  openGraph: {
+    type: 'website',
+    locale: 'en_CA',
+    siteName: 'Holo Alert',
+    images: [{ url: '/images/og-image.jpg', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 }
 
 export default function RootLayout({

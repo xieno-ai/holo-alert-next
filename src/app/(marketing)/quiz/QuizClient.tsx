@@ -362,7 +362,7 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          paddingTop: '120px',
+          paddingTop: '12px',
           fontFamily: 'var(--font-instrument-sans), sans-serif',
           color: '#787878',
         }}
@@ -394,7 +394,7 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
           fontFamily: font,
           minHeight: '100vh',
           background: 'linear-gradient(169deg, #111, #292929)',
-          paddingTop: '120px',
+          paddingTop: '12px',
           paddingBottom: '100px',
           position: 'relative',
           overflow: 'hidden',
@@ -586,7 +586,7 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
           fontFamily: font,
           background: '#fff',
           minHeight: '100vh',
-          paddingTop: '120px',
+          paddingTop: '12px',
           paddingBottom: '100px',
         }}
       >
@@ -791,7 +791,7 @@ export default function QuizClient({ devices }: { devices: Device[] }) {
         fontFamily: font,
         background: '#fff',
         minHeight: '100vh',
-        paddingTop: '120px',
+        paddingTop: '12px',
         paddingBottom: '100px',
       }}
     >

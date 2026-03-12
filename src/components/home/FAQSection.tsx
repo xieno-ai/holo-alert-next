@@ -23,8 +23,8 @@ export default async function FAQSection() {
   }
 
   return (
-    <section style={{ background: '#fff', padding: '100px 40px' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px' }}>
+    <section className="px-4 sm:px-6 lg:px-10" style={{ background: '#fff', paddingTop: '100px', paddingBottom: '100px' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20" style={{ maxWidth: '1200px', margin: '0 auto' }}>
 
         {/* Left */}
         <div>

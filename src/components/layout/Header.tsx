@@ -54,7 +54,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
       }}
     >
       {/* Main nav row */}
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 40px' }}>
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', height: '70px' }}>
 
           {/* Left: nav links (desktop only) */}
@@ -153,7 +153,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', justifySelf: 'end' }}>
             {/* Phone — desktop only */}
             <a
-              href="tel:18884450192"
+              href="tel:18884114656"
               className="hidden lg:flex items-center"
               style={{
                 gap: '8px',
@@ -165,7 +165,7 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
               }}
             >
               <Phone size={16} />
-              1.888.445.0192
+              1.888.411.4656
             </a>
 
             {/* CTA button — desktop only */}
@@ -192,8 +192,8 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
             <Sheet>
               <SheetTrigger asChild>
                 <button
-                  className="lg:hidden p-2 rounded-md transition-colors"
-                  style={{ color: '#fff' }}
+                  className="lg:hidden p-2 rounded-md transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                  style={{ color: megaOpen ? '#171717' : '#fff' }}
                   aria-label="Open navigation menu"
                 >
                   <Menu className="h-5 w-5" />
@@ -236,14 +236,8 @@ export default function Header({ productCards = DEFAULT_PRODUCT_CARDS, badgeLogo
           }}
         >
           <div
-            style={{
-              maxWidth: '1280px',
-              margin: '0 auto',
-              padding: '0 40px',
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '64px',
-            }}
+            className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 flex items-start"
+            style={{ gap: '64px' }}
           >
             {/* Left: text link columns */}
             <div style={{ display: 'flex', gap: '48px', flexShrink: 0, paddingTop: '4px' }}>

@@ -46,7 +46,7 @@ export default function CertificationsSection({ certifications }: Props) {
       }))
     : fallbackCerts
   return (
-    <section style={{ background: '#fff', padding: '80px 40px' }}>
+    <section className="px-4 sm:px-6 lg:px-10" style={{ background: '#fff', paddingTop: '80px', paddingBottom: '80px' }}>
       <div style={{ textAlign: 'center', marginBottom: '56px' }}>
         <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#4294d8', marginBottom: '12px' }}>
           seniors care
@@ -56,9 +56,9 @@ export default function CertificationsSection({ certifications }: Props) {
         </h2>
       </div>
 
-      <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', gap: '32px', alignItems: 'flex-start' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" style={{ maxWidth: '1100px', margin: '0 auto' }}>
         {certs.map((cert) => (
-          <div key={cert.name} style={{ flex: 1, minWidth: '200px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div key={cert.name} className="flex flex-col gap-4">
             <div style={{
               border: '1px solid #e2e6ea',
               background: '#fff',

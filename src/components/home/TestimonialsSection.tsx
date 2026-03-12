@@ -20,7 +20,7 @@ export default async function TestimonialsSection() {
 
   return (
     <section style={{ background: '#171717', padding: '100px 0' }}>
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 40px' }}>
+      <div className="mx-auto px-4 sm:px-6 lg:px-10" style={{ maxWidth: '1280px' }}>
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
           <span style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#4294d8', display: 'block', marginBottom: '12px' }}>
             Customer Reviews
